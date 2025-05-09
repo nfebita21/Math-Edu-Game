@@ -1,8 +1,9 @@
+import DBSource from "../data/db-source";
+import functionMap from "../globals/function-map";
 import quizOption from "../globals/quiz-option";
+import subQuiz from "../globals/sub-quiz";
 import Play from "../views/pages/play";
 import TutorialHandler from "./tutorial-handler";
-
-
 
 const numberInputValidation = () => {
   const numberInput = document.querySelectorAll('.number-input.show');
@@ -21,9 +22,8 @@ const calcHandler = () => {
   numberButtons.forEach(btn => {
     btn.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      console.log('tombol terklik')
       if (!btn.hasAttribute('id')) {
-        const number = btn.textContent;
+        const number = btn.textContent.trim();
         insertTextAtCursor(number);
       } else {
         switch (btn.id) {
@@ -100,6 +100,7 @@ const toggleFractionMode = () => {
     firstFractionContainer.classList.remove('show');
     firstRealNum.classList.add('show');
     firstRealNum.focus();
+    console.log(firstRealNum)
   } else if (activeInput.classList.contains('second-fraction')) {
     fractionInput.forEach(el => {
       el.classList.remove('show');
@@ -107,12 +108,14 @@ const toggleFractionMode = () => {
     secondFractionContainer.classList.remove('show');
     secondRealNum.classList.add('show');
     secondRealNum.focus();
+    console.log(secondRealNum)
   } else if (activeInput.id === 'firstNum') {
     firstFractionContainer.classList.add('show');
     firstDenominator.classList.add('show');
     firstNumerator.classList.add('show');
     firstRealNum.classList.remove('show');
     firstNumerator.focus();
+    console.log(firstNumerator)
   } else if (activeInput.id === 'secondNum') {
     secondDenominator.classList.add('show');
     secondNumerator.classList.add('show');
@@ -122,13 +125,50 @@ const toggleFractionMode = () => {
   }
 }
 
-const submitStepHandler = (mainIndex, stepQuiz, step) => {
-  const btnSubmitResult = document.querySelector('.btn-submit-result');
+const submitStepHandler = (mainId, stepQuiz, step) => {
+  const btnSubmitResult = document.querySelectorAll('.btn-next-step');
+  const checkerName = stepQuiz.find(sub => sub.step === step).answerChecker;
   
-  btnSubmitResult.addEventListener('click', () => {
-    step++;
-    Play.displayStep(mainIndex, stepQuiz, step);
-  });
+  btnSubmitResult.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const isQuizPassed = functionMap[checkerName]({mainId, step, btnEl: btn});
+      await progressBarHandler(step, isQuizPassed);
+      if (isQuizPassed) {
+        console.log('Passed!')
+        step++;
+        await Play.displayStep(mainId, stepQuiz, step);
+      }
+    }, { once: true});
+  })
+  
+}
+
+const progressBarHandler = async (step, isQuizPassed) => {
+  const mainIndex = sessionStorage.getItem('mainIndex');
+  const progressBar = document.querySelector('.progress-bar');
+  const minorProgressBar = progressBar.querySelectorAll('.minor-progress');
+  const activeBullet = minorProgressBar[mainIndex].querySelector('.sub.active');
+  const milestone = minorProgressBar[mainIndex].querySelector('.milestone');
+  
+  const cityId = sessionStorage.getItem('cityId');
+  const rewards = await DBSource.getCityReward(cityId);
+  let reward = {
+    minor: '',
+    milestone: '',
+  };
+  reward.minor = await rewards.data.find(reward => reward.name === 'minor');
+  reward.milestone = await rewards.data.find(reward => reward.name === `milestone${step}`);
+
+  if (isQuizPassed) {
+    activeBullet.outerHTML = `
+      <img class="${reward.minor['img_url']}" src="./rewards/${reward.minor['img_url']}.png">
+    `;
+
+    milestone.outerHTML = `
+      <img class="milestone ${reward.milestone['img_url']}" src="./rewards/${reward.milestone['img_url']}.png">
+    `
+  }
+  activeBullet.classList.remove('active'); 
 }
 
 const deleteNumberInput = () => {
@@ -169,7 +209,7 @@ const insertTextAtCursor = (text) => {
     const afterCursor = currentText.substring(cursorPosition);
 
     
-    activeInput.value = beforeCursor + text.trim() + afterCursor;
+    activeInput.value = beforeCursor + text.split('\n')[0] + afterCursor;
 
     activeInput.setSelectionRange(cursorPosition + text.length, cursorPosition + text.length);
 

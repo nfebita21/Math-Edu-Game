@@ -5,7 +5,8 @@ const mainQuiz = [
     modulId: 'PD',
     level: 1,
     difficulty: 1,
-    question: 'Di kebun Green Land, ada 5 pohon yang masing-masing menghasilkan <span class="fraction-wrapper"><span id="fraction"><span class="numerator">2</span><span class="denominator">3</span></span></span> keranjang buah setiap panen. Berapa banyak keranjang buah yang dihasilkan seluruhnya?'
+    question: 'Di kebun Green Land, ada <span class="known">5 pohon</span> yang <span class="known">masing-masing menghasilkan <span class="fraction-wrapper"><span id="fraction"><span class="numerator">2</span><span class="denominator">3</span></span></span> keranjang buah</span> setiap panen. Berapa banyak keranjang buah yang dihasilkan seluruhnya?',
+    precis: ['5 Pohon', '<span class="fraction-wrapper"><span id="fraction"><span class="numerator">2</span><span class="denominator">3</span></span></span> keranjang buah / pohon']
   },
   {
     id: 2,

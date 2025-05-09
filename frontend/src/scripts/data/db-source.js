@@ -121,6 +121,18 @@ class DBSource {
     const responseJson = await response.json();
     return responseJson;
   }
+
+  static async getModulById(modulId) {
+    const response = await fetch(API_ENDPOINT.modulById(modulId));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async getCityReward(cityId) {
+    const response = await fetch(API_ENDPOINT.cityReward(cityId));
+    const responseJson = await response.json();
+    return responseJson;
+  }
 }
 
 export default DBSource;

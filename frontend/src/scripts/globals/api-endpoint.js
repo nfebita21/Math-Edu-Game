@@ -16,6 +16,8 @@ const API_ENDPOINT = {
   studentGallery: (studentId) => `${BASE_URL}/students/gallery/${studentId}`,
   buyCity: (studentId) => `${BASE_URL}/students/${studentId}/buy-city`,
   modul: (cityId) => `${BASE_URL}/city/modul/${cityId}`,
+  modulById: (id) => `${BASE_URL}/modul/${id}`,
+  cityReward: (cityId) => `${BASE_URL}/city/reward/${cityId}`
 }
 
 export default API_ENDPOINT;

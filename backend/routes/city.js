@@ -24,7 +24,18 @@ router.get('/:cityName', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-})
+});
+
+router.get('/reward/:cityId', async (req, res) => {
+  let { cityId } = req.params;
+  try {
+    const query = 'SELECT * FROM game_reward WHERE city_id = ?';
+    const result = await connection.query(query, [cityId]);
+    res.json({ data: result[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.get('/progress/:cityId', async (req, res) => {
   const { cityId } = req.params;

@@ -4,6 +4,7 @@ import loginRoutes from './routes/login.js';
 import protectedRoutes from './routes/protected/protected.js';
 import signupRoutes from './routes/sign-up.js';
 import cityRoutes from './routes/city.js';
+import modulRoutes from './routes/modul.js';
 import cors from 'cors';
 
 const app = express();
@@ -44,6 +45,8 @@ app.use('/login', loginRoutes);
 app.use('/protected', protectedRoutes);
 app.use('/sign-up', signupRoutes);
 app.use('/city', cityRoutes);
+app.use('/modul', modulRoutes);
+
 
 // Start the server
 app.listen(PORT, '0.0.0.0', () => {

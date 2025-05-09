@@ -1,11 +1,13 @@
 import DBSource from "../../data/db-source";
 import functionMap from "../../globals/function-map";
 import quizOption from "../../globals/quiz-option";
+import tutorialData from "../../globals/tutorial-data";
 import UrlParser from "../../routes/url-parser";
 import generateQuiz from "../../utils/generate-quiz";
 import HeaderController from "../../utils/header-controller";
 import { showPointer } from "../../utils/play-handler";
-import { createMainQuiz, createResultQuiz, createSubQuiz } from "../templates/template-creator";
+import Tutorial from "../../utils/tutorial";
+import { createMainQuiz, createResultQuiz, createSubQuiz, glProgressBar } from "../templates/template-creator";
 
 const Play = {
   async render() {
@@ -18,43 +20,7 @@ const Play = {
           <p class="quiz-info"><span class="modul-name"></span> - Level <span class="level">0</span></p>
         </div>
         <div class="play-container">
-          <div class="gl-progress-bar">
-            <div class="gl-minor-progress">
-              <img class="water" src="./rewards/plants/water-drop.png">
-              <img class="water" src="./rewards/plants/water-drop.png">
-              <img class="water" src="./rewards/plants/water-drop.png">
-              <img class="water" src="./rewards/plants/water-drop.png">
-              <img class="plant big" src="./rewards/plants/apple-tree.png">
-            </div>
-            <div class="gl-minor-progress">
-              <span class="bullet wrong"></span>
-              <span class="bullet active"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <img class="plant" src="./rewards/plants/sprout.png">
-            </div>
-            <div class="gl-minor-progress">
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <img class="plant" src="./rewards/plants/sprout.png">
-            </div>
-            <div class="gl-minor-progress">
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <img class="plant" src="./rewards/plants/sprout.png">
-            </div>
-            <div class="gl-minor-progress">
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <img class="plant" src="./rewards/plants/sprout.png">
-            </div>
-          </div>
+          
           <div class="quiz-title">
             <p>Tutorial</p>
           </div>
@@ -75,7 +41,8 @@ const Play = {
     const header = document.getElementById('app-bar');
     HeaderController.hideHeader(header);
     const content = document.querySelector('#content');
-    const playContainer = document.querySelector('.play');
+    const playSection = document.querySelector('.play');
+    const playContainer = playSection.querySelector('.play-container');
     const btnBack = document.querySelector('.play #btnBack');
     const levelQuiz = document.querySelector('.quiz-info .level');
     const modulName = document.querySelector('.quiz-info .modul-name')
@@ -84,7 +51,7 @@ const Play = {
     const cityName = url.cityName;
     const level = url.level;
     const backgroundURL = `url(./wallpapers/${cityName.replace('%20', '-')}/${Number(level) + 1}.png)`;
-    playContainer.style.backgroundImage = backgroundURL;
+    playSection.style.backgroundImage = backgroundURL;
     content.style.padding = 0;
 
     btnBack.addEventListener('click', () => {
@@ -95,32 +62,46 @@ const Play = {
 
     const getCity = await DBSource.getCityByName(cityName);
     const city = getCity.data[0];
+    sessionStorage.setItem('cityId', city.id);
+    const progressBarName = city['progress_bar_name'];
+    playContainer.insertAdjacentHTML('afterbegin', functionMap[progressBarName]());
+
     const getModul = await DBSource.getModul(city.id);
-    const modul = getModul.data[0];
+    const modul = await getModul.data[0];
     modulName.innerText = modul['modul_name'];
 
     const detailQuiz = generateQuiz(modul.id, level);
     
     this.displayQuiz(detailQuiz, 0);
+    
   },
 
-  displayQuiz(detailQuiz, mainIndex) {
+  async displayQuiz(detailQuiz, mainIndex) {
+    
     const step = 1;
+    sessionStorage.setItem('mainIndex', mainIndex);
 
     const quizWrapper = document.querySelector('.quiz-content');
     quizWrapper.innerHTML += createMainQuiz(detailQuiz.main[mainIndex].question);
     const currentMainId = detailQuiz.main[mainIndex].id;
-  
 
-    this.displayStep(currentMainId, detailQuiz.sub, step);
+    await this.displayStep(currentMainId, detailQuiz.sub, step);
   },
 
-  displayStep(mainId, stepQuiz, step) {
+  async displayStep(mainId, stepQuiz, step) {
+    const mainIndex = sessionStorage.getItem('mainIndex');
+    const progressBar = document.querySelector('.progress-bar');
+    const minorProgressBar = progressBar.querySelectorAll('.minor-progress');
+    const currentSub = minorProgressBar[mainIndex].querySelector(".sub:not(.wrong)");
+    currentSub.classList.add('active'); 
+
+    const stepIndex = step;
+
     const quizWrapper = document.querySelector('.quiz-content');
 
-    const stepId = this.stepChecker(mainId, step);
+    step = this.stepChecker(mainId, step);
 
-    const currentStep = stepQuiz.find(quiz => quiz.step === stepId);
+    const currentStep = stepQuiz.find(quiz => quiz.step === step);
 
     const question = currentStep.question;
     const templateName = currentStep.answerTemplateName;
@@ -134,22 +115,23 @@ const Play = {
       const stepLabel = document.querySelector('.sub-quiz h2')
       const questionWrapper = document.querySelector('.sub-quiz p');
       const resultContainer = document.querySelector('.result');
-      stepLabel.innerText = `Step ${step}`
+      stepLabel.innerText = `Step ${stepIndex}`;
       questionWrapper.innerText = question;
-      resultContainer.innerHTML = answerTemplate.htmlElement;
+      resultContainer.innerHTML = functionMap[templateName](mainId, currentStep).htmlElement;
     }
 
-    
-    const focusInput = document.querySelector('.initial-focus');
-    focusInput?.focus();
+    const modul = (await DBSource.getModulById(currentStep.modulId)).data[0];
+
+
+    this.gameHandler(mainId, stepQuiz, step);
 
     if (mainId === 1) {
-      showPointer(mainId, step, templateName);
+      // showPointer(mainId, step, templateName);
+      const tutorial = new Tutorial(tutorialData);
+      tutorial.start(modul['city_id'], currentStep.level, step);
+      console.log('start tutorial step');
     }
 
-    
-    this.gameHandler(mainId, stepQuiz, stepId)
-    
   },
 
   gameHandler(mainId, stepQuiz, step) {

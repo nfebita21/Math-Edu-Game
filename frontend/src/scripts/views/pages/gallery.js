@@ -11,7 +11,8 @@ const Gallery = {
           <img src="./title-decor/city4.png">
           <img src="./title-decor/city3.png">
         </div>
-        <p>Galeri Spot Rahasia</p>
+        <p class="break--mobile">Galeri<br>Spot Rahasia</p>
+        <p class="break--desktop">Galeri Spot Rahasia</p>
         <div class="title-decor cities-right">
           <img src="./title-decor/city.png">
           <img src="./title-decor/city4-backwards.png">

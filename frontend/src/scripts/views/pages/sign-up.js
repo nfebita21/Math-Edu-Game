@@ -4,21 +4,26 @@ const SignUp = {
   async render() {
     return `
       <div class="auth-container">
-        <img class="app-title" src="app-title.png">
+        <div class="header">
+          <img class="app-title" src="app-title.png">
+        </div>
         <form class="form-wrapper sign-up">
-          <h2>SIGN UP</h2>
+          <h2>Buat Akun Baru</h2>
           <div class="input-user">
           <input type="text" id="identityNumber" placeholder="Nomor Identitas" autocomplete="off" required/>
           <input id="password" type="password" placeholder="Kata Sandi" required/>
           <input id="passwordConfirm" type="password" placeholder="Konfirmasi Kata Sandi" required/>
           </div>
-          <button role="button" id="btn-sign-up">SIGN UP</button>
+          <button role="button" id="btn-sign-up">DAFTAR</button>
         </form>
-        <div class="signup-offer">
-          <p>Sudah memiliki akun?</p>
-          <button id="go-to-login">LOG IN</button>
+        <div class="login-offer side-content">
+          <div class="text-content"
+            <p>Sudah memiliki akun?</p>
+            <button id="go-to-login">MASUK</button>
+          </div>
+          <img class="illustration" src="adventure-illustration2.png">
         </div>
-        <img class="signup-offer__illustration" src="adventure-illustration2.png">
+        
       </div>
     `;
   },

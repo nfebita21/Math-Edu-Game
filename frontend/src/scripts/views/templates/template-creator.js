@@ -215,18 +215,59 @@ const createResultQuiz = (templateResult) => {
   // templateResult.setup();
 
   return {
-    htmlElement: `<div class="result">
+    htmlElement: `<div class="result"> 
       ${templateResult.htmlElement}
+      
     </div>`,
     // setup: () => templateResult.setup()
   }
 }
 
+const glProgressBar = () => `
+  <div class="gl-progress-bar progress-bar">
+    <div class="gl-minor-progress minor-progress">
+      <span class="sub bullet"></span>
+      <span class="sub bullet dua"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <img class="milestone plant" src="./rewards/sprout.png">
+    </div>
+    <div class="gl-minor-progress minor-progress">
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <img class="milestone plant" src="./rewards/sprout.png">
+    </div>
+    <div class="gl-minor-progress minor-progress">
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <img class="milestone plant" src="./rewards/sprout.png">
+    </div>
+    <div class="gl-minor-progress minor-progress">
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <img class="milestone plant" src="./rewards/sprout.png">
+    </div>
+    <div class="gl-minor-progress minor-progress">
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <span class="sub bullet"></span>
+      <img class="milestone plant" src="./rewards/sprout.png">
+    </div>
+  </div>
+  `;
+
 const fractionMultiplication = () => {
   return {
     htmlElement: `<div class="calc-result">
       <div class="calc-input">
-        <input id="firstNum" class="number-input show" autofocus maxlength="2" autocomplete="off"></input>
+        <input id="firstNum" class="initial-focus number-input show" autofocus maxlength="2" autocomplete="off"></input>
         <div class="fraction-container first">
           <input class="first-fraction number-input" id="numerator" max-length="2" autocomplete="off">
           <div class="fraction-line"></div>
@@ -260,8 +301,9 @@ const fractionMultiplication = () => {
         <button>2</button>
         <button>3</button>
       </div>
+      <p id="quiz-answer">../..*..</p>
       <div class="btn-submit-result__container">
-        <button class="btn-submit-result" id="btnSubmitResult">Lanjut</button>
+        <button class="btn-submit-result btn-next-step" id="btnSubmitResult">Lanjut</button>
       </div>
     </div>`,
     // setup: () => fractionMultiplicationHandler.init()
@@ -312,7 +354,7 @@ const resultFractionMultiplication = (mainId, currentStep) => {
         <button>3</button>
       </div>
       <div class="btn-submit-result__container">
-        <button class="btn-submit-result" id="btnSubmitResult">Lanjut</button>
+        <button class="btn-submit-result btn-next-step" id="btnSubmitResult">Lanjut</button>
       </div>
     </div>`,
     // setup: () => fractionMultiplicationHandler.init()
@@ -347,12 +389,12 @@ const fractionAbilityToSimplify = (mainId, currentStep) => {
         </span>
       </div>
       <div class="answer-choices">
-        <button class="yes">
+        <button class="yes btn-next-step">
           <img class="flower" src="flower.png">
           <span class="alphabet">A.</span>
           <p>${choicesAnswer[0].answer}</p>
         </button>
-        <button class="no">
+        <button class="no btn-next-step">
           <img class="flower" src="flower.png">
           <span class="alphabet">B.</span>
           <p>${choicesAnswer[1].answer}</p>
@@ -388,7 +430,7 @@ const illustrationChoices = (mainId, currentStep) => {
           <span class="numerator">${resultNumerator}</span>
           <span class="denominator">${resultDenominator}</span>
         </span>
-        keranjang buah
+        <p class="item-name">keranjang buah</p>
       </div>
       <div class="answer-choices">
         <button>
@@ -422,6 +464,129 @@ const createFingerPointer = () => `
   </div>
 `;
 
+const createPrecisWrapper = () => `
+  <div class="precis-wrapper">
+    <p>Diketahui:</p>
+  </div>
+`;
 
-export { createCitySliderTemplate, createGreetingBubble, createButtonBackToLobby, createCategoryCardsContainer, createEmptyCard, createGalleryCard, createRankingRow, createPurchaseConfirmationModal, createSettingsModal, createButtonLevel, createMainQuiz, createSubQuiz, fractionMultiplication, createResultQuiz, resultFractionMultiplication, fractionAbilityToSimplify, illustrationChoices, createFingerPointer };
+const createPrecisTutorial = (text) => `
+  <p><i class="fa-solid fa-leaf"></i> ${text}</p>
+`;
+
+const createPointerText = (text) => `
+  <div class="pointer-text">
+    <p>${text}</p>
+  </div>
+`;
+
+const createMultiplicationLineTop = () => `
+  <svg class="curved-line" width="40" height="50"> 
+    <path d="M 3 15 Q 20 -5, 35 29" stroke="blue" stroke-width="2" fill="none" /> 
+  </svg>
+`;
+
+const createClueWrapper = (text) => `
+  <div class="tutorial-clue__wrapper">
+    <div class="tutorial-clue focused">
+      <img src="light-bulb.png">
+      <p>${text}</p>
+    </div>
+  </div>
+`;
+
+const createClue = (text) => `
+  <div class="tutorial-clue focused">
+    <img src="light-bulb.png">
+    <p>${text}</p>
+  </div>
+`;
+
+const createInstruction = (text) => `
+  <div class="tutorial-instruction">
+    <p>${text}</p>
+    <img src="instruction.png">
+  </div>
+`;
+
+const createGuide = (text) => `
+  <div class="tutorial-guide">
+    <p>${text}</p>
+    <button>Oke, mengerti.</button>
+  </div>
+`;
+
+const createRightArrow = () => `
+  <img class="right-arrow_multiplication" src="right-arrow.png">
+`;
+
+const createBtnNextTutorial = () => `
+  <button class="btn-next__tutorial">Oke, mengerti</button>
+`;
+
+const createIllustrationContainer = () => `
+  <div class="illustration-container"></div>
+`;
+
+const createGlIllustrationOverlayA = () => `
+  <div class="illustration-overlay first gl">
+    <div class="item">
+      <div class="number-counter">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="number-counter">
+        <span>4</span>
+        <span>5</span>
+        <span>6</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="number-counter">
+        <span>7</span>
+        <span>8</span>
+        <span>9</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="number-counter">
+        <span>10</span>
+        <span class="empty"></span>
+        <span>11</span>
+      </div>
+    </div>
+  </div>
+`;
+
+const createIllustrationSummary = (text) => `
+  <div class="illustration-summary">
+    <p>${text}</p>
+  </div>
+`;
+
+const createDialogTutorialTop = (text) => `
+  <div class="dialog-tutorial top">
+    <p>${text}</p>
+  </div>
+`;
+
+const createDialogTutorialBottom = (text) => `
+  <div class="dialog-tutorial bottom">
+    <p>${text}</p>
+  </div>
+`;
+
+
+/* <img class="water" src="./rewards/plants/water-drop.png"></img> 
+<span class="bullet wrong"></span>
+*/
+export { createCitySliderTemplate, createGreetingBubble, createButtonBackToLobby, createCategoryCardsContainer, createEmptyCard, createGalleryCard, createRankingRow, createPurchaseConfirmationModal, createSettingsModal, createButtonLevel, createMainQuiz, createSubQuiz, fractionMultiplication, createResultQuiz, resultFractionMultiplication, fractionAbilityToSimplify, illustrationChoices, createFingerPointer, createPrecisWrapper, createPrecisTutorial,
+  createPointerText, createMultiplicationLineTop, createRightArrow, createClueWrapper, createClue, createInstruction, createGuide, glProgressBar, createBtnNextTutorial, createIllustrationContainer, 
+  createGlIllustrationOverlayA, createIllustrationSummary,
+  createDialogTutorialTop,
+  createDialogTutorialBottom
+ };
 

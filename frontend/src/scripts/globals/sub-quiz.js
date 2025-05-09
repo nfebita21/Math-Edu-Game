@@ -1,5 +1,3 @@
-import { createFractionMultiplication } from "../views/templates/template-creator";
-
 const subQuiz = [
   {
     id: 1,
@@ -8,7 +6,8 @@ const subQuiz = [
     step: 1,
     question: 'Tuliskan bentuk perkalian yang sesuai untuk menjawab soal di atas!',
     answerTemplateName: 'fractionMultiplication',
-    functionHandler: ['numberInputValidation', 'calcHandler', 'fractionToggler', 'submitStepHandler']
+    functionHandler: ['numberInputValidation', 'calcHandler', 'fractionToggler',  'submitStepHandler'],
+    answerChecker: 'fractionMultiplicationChecking'
   },
   {
     id: 2,
@@ -17,7 +16,8 @@ const subQuiz = [
     step: 2,
     question: 'Isilah hasil dari perkalian pecahan tersebut!',
     answerTemplateName: 'resultFractionMultiplication',
-    functionHandler: ['numberInputValidation', 'calcHandler', 'submitStepHandler']
+    functionHandler: ['numberInputValidation', 'calcHandler', 'submitStepHandler'],
+    answerChecker: 'resultFractionMultiplicationChecking'
   },
   {
     id: 3,
@@ -26,7 +26,8 @@ const subQuiz = [
     step: 3,
     question: 'Menurutmu apakah hasil pecahan itu bisa disederhanakan?',
     answerTemplateName: 'fractionAbilityToSimplify',
-    functionHandler: ['multiChoicesHandler']
+    functionHandler: ['submitStepHandler'],
+    answerChecker: ['fractionAbilityToSimplifyChecking']
   },
   {
     id: 4,
@@ -42,7 +43,8 @@ const subQuiz = [
     step: 5,
     question: 'Manakah ilustrasi di bawah ini yang sesuai untuk hasil pecahan itu?',
     answerTemplateName: 'illustrationChoices',
-    functionHandler: ['multiChoicesHandler', 'openImageDetail']
+    functionHandler: ['multiChoicesHandler', 'openImageDetail', 'submitStepHandler'],
+    answerChecker: ['illustrationChoicesChecking']
   },
 ];
 

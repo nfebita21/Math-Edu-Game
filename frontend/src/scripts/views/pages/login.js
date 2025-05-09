@@ -5,20 +5,25 @@ const Login = {
   async render() {
     return `
       <div class="auth-container">
-        <img class="app-title" src="app-title.png">
+        <div class="header">
+          <img class="app-title" src="app-title.png">
+        </div>
         <form class="form-wrapper login">
-            <h2>LOG IN</h2>
+            <h2>Selamat Datang!</h2>
             <div class="input-user">
             <input type="text" id="username" placeholder="Nomor Identitas" autocomplete="off" required/>
             <input id="password" type="password" placeholder="Kata Sandi" required/>
             </div>
-            <button role="button" id="btn-login">LOG IN</button>
+            <button role="button" id="btn-login">Masuk</button>
           </form>
-        <div class="signup-offer">
-          <p>Belum memiliki akun?</p>
-          <button id="go-to-sign-up">SIGN UP</button>
+        <div class="signup-offer side-content">
+          <div class="text-content">
+            <p>Belum memiliki akun?</p>
+            <button id="go-to-sign-up">DAFTAR</button>
+          </div>
+          <img class="illustration"src="adventure-illustration2.png">
         </div>
-        <img class="signup-offer__illustration" src="adventure-illustration2.png">
+        
       </div>
     `;
   },
