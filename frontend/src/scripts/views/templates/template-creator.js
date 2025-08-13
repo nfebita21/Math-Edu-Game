@@ -985,7 +985,7 @@ const multiplicationFractionForm = (mainId, currentStep, operator) => {
             <input class="second-fraction number-input" id="numerator" max-length="2" autocomplete="off">
             <div class="fraction-line"></div>
             <div class="second-fraction__denominator">
-              <input class="second-fraction number-input show second-fraction__denominator" id="denominator" autocomplete="off">
+              <input class="second-fraction number-input second-fraction__denominator" id="denominator" autocomplete="off">
             </div>
           </div>
         </div>
