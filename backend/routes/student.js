@@ -32,7 +32,6 @@ router.get('/search/:identityNumber', async (req, res) => {
       data: result[0]
     });
   } catch(err) {
-    console.log('error')
     res.status(500).json({ error: err.message});
   }
 });
@@ -70,13 +69,15 @@ router.put('/:identityNumber', async (req, res) => {
   }
 });
 
-router.get('/:studentId/total-exp', async (req, res) => {
+router.get('/:studentId/total-score', async (req, res) => {
   try {
     const { studentId } = req.params;
+    console.log('ini rute quiz progress')
 
-    const query = 'SELECT SUM(exp) AS total_exp FROM student_exp WHERE student_id = ?';
-    const result = await connection.query(query, [studentId]);
-    res.json({ result: result[0][0] });
+    const query = 'SELECT SUM(score) AS total_score FROM quiz_history WHERE student_id = ?';
+    let result = await connection.query(query, [studentId]);
+    result = result[0][0]['total_score'] === null ? {'total_score': 0} : result[0][0];
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -86,7 +87,7 @@ router.get('/:studentId/:cityId', async (req, res) => {
   try {
     const { studentId, cityId } = req.params;
 
-    const query = 'SELECT * FROM student_exp WHERE student_id = ? AND city_id = ?';
+    const query = 'SELECT * FROM city_progress WHERE student_id = ? AND city_id = ?';
     const result = await connection.query(query, [studentId, cityId]);
     res.json({ data: result[0][0] });
   } catch (err) {
@@ -96,9 +97,8 @@ router.get('/:studentId/:cityId', async (req, res) => {
 
 router.get('/leaderboard', async (req, res) => {
   try {
-    const query = 'SELECT s.nick_name, s.avatar_url, SUM(se.exp) AS total_exp FROM student_exp se INNER JOIN student s on se.student_id = s.id GROUP BY s.id HAVING total_exp > 0 ORDER BY total_exp DESC';
+    const query = 'SELECT s.nick_name, s.avatar_url, SUM(qh.score) AS total_score FROM quiz_history qh INNER JOIN student s on qh.student_id = s.id GROUP BY s.id HAVING total_score > 0 ORDER BY total_score DESC';
     const result = await connection.query(query);
-    console.log(result)
     res.json({ data: result[0] });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -117,5 +117,23 @@ router.put('/:studentId/buy-city', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.put('/:studentId/add-candy', async (req, res) => {
+  const { studentId } = req.params;
+  const { amount } = req.body;
+
+  try {
+    const query = "UPDATE student SET candy = candy + ? WHERE id = ?";
+    const [result] = await connection.query(query, [amount, studentId]);
+    if (result.affectedRows === 0){
+      res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.json({message: 'Candy successfully updated'});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 export default router;

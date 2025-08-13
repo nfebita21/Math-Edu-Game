@@ -1,18 +1,20 @@
-import quizOption from "../globals/quiz-option";
-
-const findCorrectAnswer = (mainId, step) => {
-  const quizOpt = quizOption.find(item => item.mainQuizId === mainId && item.subQuizId === step);
-  const correctAnswer = quizOpt.choices.find(opt => opt.isCorrect === true).answer;
+const findCorrectAnswer = (mainId, stepId) => {
+  const options = (JSON.parse(sessionStorage.getItem('detailQuiz'))).answerChoices;
+  const correctAnswer = options.find(item => item.main_quiz_id === mainId && item.sub_quiz_id === stepId && item.is_correct).answer;
   return correctAnswer;
 }
 
-const fractionMultiplicationChecking = (detail) => {
-  const {mainId, step} = detail;
+const fractionSetQuestionChecking = (detail) => {
+  const {mainId, stepId} = detail;
+  let {operator} = detail;
   let answer = '';
   let firstNum = '';
   let secondNum = '';
+  operator = operator === 'x' ? '*' : operator;
 
-  const correctAnswer = findCorrectAnswer(mainId, step);
+  const correctAnswer = findCorrectAnswer(mainId, stepId);
+  const correctAnswerSplitted = correctAnswer.split(operator);
+  const reversedAnswer = `${correctAnswerSplitted[1]}${operator}${correctAnswerSplitted[0]}`;
   
   const firstNumInput = document.querySelector('#firstNum.show');
   firstNum = firstNumInput ? firstNumInput.value : '';
@@ -26,13 +28,14 @@ const fractionMultiplicationChecking = (detail) => {
   const secondFractionContainer = document.querySelector('.fraction-container.second.show');
   secondNum = secondFractionContainer ? secondFractionContainer.querySelector('#numerator').value + '/' + secondFractionContainer.querySelector('#denominator').value : secondNum;
   
-  answer = `${firstNum}*${secondNum}`;
-  return answer === correctAnswer;
+  answer = `${firstNum}${operator}${secondNum}`;
+  console.log(answer, correctAnswer)
+  return answer === correctAnswer || answer === reversedAnswer;
 }
 
-const resultFractionMultiplicationChecking = (detail) => {
-  const {mainId, step} = detail;
-  const correctAnswer = findCorrectAnswer(mainId, step);
+const fractionResultChecking = (detail) => {
+  const {mainId, stepId} = detail;
+  const correctAnswer = findCorrectAnswer(mainId, stepId);
   let numerator = '';
   let denominator = '';
 
@@ -43,18 +46,45 @@ const resultFractionMultiplicationChecking = (detail) => {
 }
 
 const fractionAbilityToSimplifyChecking = (detail) => {
-  const { mainId, step, btnEl } = detail;
-  const correctAnswer = findCorrectAnswer(mainId, step);
+  const { mainId, stepId, btnEl } = detail;
+  const correctAnswer = findCorrectAnswer(mainId, stepId);
   const answer = btnEl.querySelector('p').textContent;
 
-  console.log(mainId, step);
-  console.log(answer, correctAnswer);
   return answer === correctAnswer;
 }
 
-const illustrationChoicesChecking = (detail) => {
-  const { mainId, step } = detail;
-  const correctAnswer = findCorrectAnswer(mainId, step);
+const simplestFractionChecking = (detail) => {
+  const { mainId, stepId, btnEl } = detail;
+  const correctAnswer = findCorrectAnswer(mainId, stepId);
+  console.log(correctAnswer)
+
+  if (correctAnswer.includes('/')) {
+    const fractionSplitted = correctAnswer.split('/');
+    const correctNumerator = fractionSplitted[0];
+    const correctDenominator = fractionSplitted[1];
+
+    const numerator = btnEl.querySelector('.answer-choices .numerator').textContent;
+    const denominator = btnEl.querySelector('.answer-choices .denominator').textContent;
+
+    console.log(numerator, denominator)
+
+    return correctNumerator === numerator && correctDenominator === denominator;
+  } else {
+    const answer = btnEl.querySelector('p').textContent;
+    return answer === correctAnswer;
+  }
+  
 }
 
-export { fractionMultiplicationChecking, resultFractionMultiplicationChecking, fractionAbilityToSimplifyChecking, illustrationChoicesChecking };
+const illustrationChoicesChecking = (detail) => {
+  const { mainId, stepId, btnEl } = detail;
+  let correctAnswer = findCorrectAnswer(mainId, stepId);
+
+  const answerImg = btnEl.querySelector('.illustration');
+  const answer = answerImg.getAttribute('src').split('./illustrations-quiz/')[1];
+  console.log(correctAnswer, answer);
+
+  return answer === correctAnswer;
+}
+
+export { fractionSetQuestionChecking, fractionResultChecking, fractionAbilityToSimplifyChecking, simplestFractionChecking, illustrationChoicesChecking };

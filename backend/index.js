@@ -1,5 +1,6 @@
 import express from 'express';
 import studentRoutes from './routes/student.js';
+import quizProgressRoutes from './routes/quiz-progress.js';
 import loginRoutes from './routes/login.js';
 import protectedRoutes from './routes/protected/protected.js';
 import signupRoutes from './routes/sign-up.js';
@@ -15,7 +16,6 @@ const whiteList = [
   'http://localhost:9000',
   'http://192.168.1.2:9000',
 ]
-
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -39,8 +39,14 @@ app.options('*', cors(corsOptions));
 // Parse JSON requests
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
+
 // Use the student route
 app.use('/students', studentRoutes);
+app.use('/quiz-progress', quizProgressRoutes);
 app.use('/login', loginRoutes);
 app.use('/protected', protectedRoutes);
 app.use('/sign-up', signupRoutes);

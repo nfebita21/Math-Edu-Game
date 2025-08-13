@@ -1,4 +1,4 @@
-import { createBtnNextTutorial, createClue, createClueWrapper, createDialogTutorial, createDialogTutorialBottom, createDialogTutorialTop, createFingerPointer, createGlIllustrationOverlayA, createGuide, createIllustrationContainer, createIllustrationSummary, createInstruction, createMultiplicationLineTop, createPointerText, createPrecisTutorial, createPrecisWrapper,  createRightArrow } from "../views/templates/template-creator";
+import { createArrowToBottom, createArrowToTop, createBtnNextTutorial, createClue, createClueWrapper, createDialogTutorialBottom, createDialogTutorialTop, createFingerPointer, createGuide, createIllustrationContainer, createIllustrationSummary, createInstruction, createMultiplicationLineTop, createPointerText, createPrecisTutorial, createPrecisWrapper,  createRightArrow, createSwapArrow } from "../views/templates/template-creator";
 
 const actions = {
   toggleOverlay: (next) => {
@@ -39,8 +39,6 @@ const actions = {
   },
 
   showPrecisWrapper: (next) => {
-    console.log(`${createPrecisWrapper} 
-      ditampilkan`);
     const resultContainer = document.querySelector('.result');
     resultContainer.insertAdjacentHTML('beforeend', createPrecisWrapper())
     next();
@@ -53,9 +51,10 @@ const actions = {
 
   },
 
-  showPrecis: (next, text) => {
+  showPrecis: (next, precis, index) => {
+    const precisArr = precis.split('|');
     const precisWrapper = document.querySelector('.precis-wrapper');
-    precisWrapper.innerHTML += createPrecisTutorial(text);
+    precisWrapper.innerHTML += createPrecisTutorial(precisArr[index]);
     next()
 
   },
@@ -66,7 +65,7 @@ const actions = {
     next();
   },
 
-  showPointer: (next, target, instruction = 'Masukkan angka', isInitial = false) => {
+  showPointer: (next, target, instruction = 'Masukkan angka', textContainer = '.result', topPosition ='40px', isInitial = false) => {
     
     if (target.startsWith('.')) {
     const btnTarget = document.querySelector(target);
@@ -88,24 +87,29 @@ const actions = {
       }, { once: true });
     }
 
+    const fingerEl = document.querySelector('.finger-container');
+    fingerEl.style.top = topPosition;
+
     if (isInitial) {
       const firstInput = document.querySelector('.initial-focus');
       firstInput.focus();
     }
 
-    setTimeout(() => actions.showInstruction(instruction), 500);
+    setTimeout(() => actions.showInstruction(instruction, textContainer), 500);
     
   },
 
   removeElement: (next, elements) => {
     elements.forEach(target => {
-      document.querySelector(target).remove();  
+      document.querySelectorAll(target).forEach(el => {
+        el.remove();
+      })
     });
 
     next();
   },
 
-  showArrowMultiplication: (next, position) => {
+  showArrowMultiplication: (next, position, isFlipped = 0) => {
     const multiplicationWrapper = document.querySelector('.multiplication-pair');
 
     switch (position) {
@@ -119,14 +123,27 @@ const actions = {
         break;
     } 
 
+    if (isFlipped) {
+      const arrowEl = document.querySelector('.curved-line');
+      arrowEl.classList.add('flip-horizontal');
+    }
+    
+
     next();
   },
 
-  showInstruction: (text) => {
-    const container = document.querySelector('.result');
+  showInstruction: (text, container) => {
+    const containerEl = document.querySelector(container);
 
     if (!document.querySelector('.tutorial-instruction')) {
-      container.insertAdjacentHTML('beforeend', createInstruction(text));
+      containerEl.insertAdjacentHTML('beforeend', createInstruction(text));
+    }
+
+    if (container !== '.result') {
+      const instructionEl = document.querySelector('.tutorial-instruction');
+      instructionEl.style.left = '110%';
+      // instructionEl.querySelector('.tutorial-instruction img').style.right = '-30px';
+      // instructionEl.querySelector('.tutorial-instruction img').style.top = '-35px';
     }
   },
 
@@ -207,9 +224,15 @@ const actions = {
     next();
   },
 
-  addOverlay: (next, target) => {
+  showElement: (next, target) => {
     const targetEl = document.querySelector(target);
-    targetEl.insertAdjacentHTML('beforeend', createGlIllustrationOverlayA());
+    targetEl.style.display = 'block';
+    next();
+  },
+
+  addOverlay: (next, target, overlayEl) => {
+    const targetEl = document.querySelector(target);
+    targetEl.insertAdjacentHTML('beforeend', overlayEl);
     next();
   },
 
@@ -229,12 +252,26 @@ const actions = {
 
   showArrowNextBtn: (next, target) => {
     const targetEl = document.querySelector(target);
-    targetEl.insertAdjacentHTML('beforeend', '<button class="btn-right-arrow"></button>');
+    targetEl.insertAdjacentHTML('beforeend', '<button class="btn-right-arrow"><img src="dialog-next.png"></button>');
 
     const btnNext = document.querySelector('.btn-right-arrow');
     btnNext.addEventListener('click', () => next(), {once: true});
-  }
+  },
 
+  showSwapArrow: (next, target, direction) => {
+    const targetEl = document.querySelector(target);
+
+    if (direction === 'toTop') {
+      targetEl.insertAdjacentHTML('beforeend', createArrowToTop());
+    }
+
+    if (direction === 'toBottom') {
+      targetEl.insertAdjacentHTML('beforeend', createArrowToBottom());
+    }
+    
+
+    next();
+  }
   
 }
 export default actions;

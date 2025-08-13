@@ -24,9 +24,12 @@ const Leaderboard = {
           <p>AVATAR</p>
           <p>NAMA PEMAIN</p>
           <p id="hidden-field">PEROLEHAN CANDY TERBANYAK PER KOTA</p>
-          <p>TOTAL SCORE</p>
+          <p>TOTAL SKOR</p>
         </div>
         <ul class="player-list"></ul>
+        <div class="unavailable-leaderboard">
+          <p>Papan peringkat belum tersedia</p>
+        </div>
       </div>
     `;
   },
@@ -42,8 +45,16 @@ const Leaderboard = {
     leaderboard.forEach((player, index) => {
       playerList.innerHTML += createRankingRow(index+1, player);
     });
+    const unavailableLeaderboardText = document.querySelector('.unavailable-leaderboard');
 
-    this.addTrophyToFirstRank();
+    if (playerList.children.length > 0) {
+      this.addTrophyToFirstRank();
+      unavailableLeaderboardText.style.display = "none";
+    } else {
+      unavailableLeaderboardText.style.display = 'block';
+    }
+
+    
 
   },
 

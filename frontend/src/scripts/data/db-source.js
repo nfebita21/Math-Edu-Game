@@ -61,8 +61,8 @@ class DBSource {
     return responseJson;
   }
 
-  static async getTotalExpStudent(id) {
-    const response = await fetch(API_ENDPOINT.totalExp(id));
+  static async totalScoreStudent(id) {
+    const response = await fetch(API_ENDPOINT.getTotalScore(id));
 
     const responseJson = await response.json();
     return responseJson;
@@ -128,11 +128,145 @@ class DBSource {
     return responseJson;
   }
 
-  static async getCityReward(cityId) {
-    const response = await fetch(API_ENDPOINT.cityReward(cityId));
+  static async getCityReward(cityId, level) {
+    const response = await fetch(API_ENDPOINT.cityReward(cityId, level));
     const responseJson = await response.json();
     return responseJson;
   }
+
+  static async getQuizProgress(id) {
+    const response = await fetch(API_ENDPOINT.quizProgress(id));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async getStudentQuizProgress(studentId, modulId, level) {
+    const response = await fetch(API_ENDPOINT.studentQuizProgress(studentId, modulId, level));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async addProgressQuiz(studentId, modulId, level) {
+    const response = await fetch(API_ENDPOINT.newQuizProgress(studentId), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ modulId, level }),
+    });
+    const responseJson = await response.json();
+    return responseJson;
+  }
+  
+  static async updateTutorialPassed(quizProgressId) {
+    const response = await fetch(API_ENDPOINT.tutorialPassed(quizProgressId), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async convertReward(cityId, rewardName) {
+    const response = await fetch(API_ENDPOINT.rewardConversion(cityId, rewardName));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async getGameResultTemplate(cityId) {
+    const response = await fetch(API_ENDPOINT.gameResultTemplate(cityId));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async highScore(studentId, cityId, level) {
+    const response = await fetch(API_ENDPOINT.getHighScore(studentId, cityId, level));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async startQuiz(studentId, cityId, level) {
+    const response = await fetch(API_ENDPOINT.postNewQuiz(studentId, cityId, level), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async historySaving(data) {
+    const { historyId, score, totalCandy, overallValue, totalQuestions, correctAnswers, isPassed } = data;
+    const response = await fetch(API_ENDPOINT.saveHistory(historyId), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        score, totalCandy, overallValue, totalQuestions, correctAnswers, isPassed
+      })
+    });
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async candyIncrease(studentId, candy) {
+    const response = await fetch(API_ENDPOINT.addCandy(studentId), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        amount: candy
+      })
+    });
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async highScoreCity(studentId, cityId) {
+    const response = await fetch(API_ENDPOINT.getCityHighScore(studentId, cityId));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async cityLeaderboard(cityId) {
+    const response = await fetch(API_ENDPOINT.getCityLeaderboard(cityId));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async passedQuizzes(studentId, cityId, level) {
+    const response = await fetch(API_ENDPOINT.searchPassedQuizzes(studentId, cityId, level));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async levelProgress(cityId, studentId) {
+    const response = await fetch(API_ENDPOINT.getLevelProgress(cityId, studentId));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+  
+  static async level(cityId, levelNum) {
+    const response = await fetch(API_ENDPOINT.getLevel(cityId, levelNum));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async quiz(modulId, level) {
+    const response = await fetch(API_ENDPOINT.getQuiz(modulId, level));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  
 }
+
+
+
 
 export default DBSource;

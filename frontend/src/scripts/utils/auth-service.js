@@ -44,10 +44,6 @@ class AuthService {
     return pw1 === pw2;
   }
 
-  // static #resetForm() {
-  //   const formWrapper = document.querySelector('.form-wrapper');
-  //   formWrapper.reset();
-  // }
 
   
 }

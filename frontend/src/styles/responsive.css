@@ -104,6 +104,82 @@
     width: 80%;
     height: 30px;
   }
+
+  /*** Result Game **/
+
+  .result-game {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 15px;
+  }
+
+  .result-game h1 {
+    font-size: 27px;
+  }
+
+  .harvest-container, .score-container {
+    width: 100%;
+    max-width: 250px;
+    min-height: 180px;
+  }
+
+  .result-game h1, .overall-value, .action-options {
+    grid-column: span 2;
+  }
+
+  .score-container h2 {
+    font-size: 22px;
+  }
+
+  .score-container p {
+    font-size: 17px;
+    text-align: left;
+  }
+
+  .btn-leaderboard {
+    top: unset;
+    bottom: 10px;
+  }
+
+  .btn-leaderboard:hover {
+    width: 105px;
+  }
+
+  .btn-leaderboard:hover span {
+    opacity: 1;
+    visibility: visible;
+    /* left: 7px; */
+  }
+
+  .overall-value .label {
+    width: 200px;
+    height: 50px;
+  }
+
+  .overall-value p {
+    font-size: 17px;
+  }
+
+  .overall-value p span {
+    font-size: 22px;
+  }
+
+  .final-stamp {
+    width: 35px;
+    height: 35px;
+    right: calc(50% - 110px);
+  }
+
+  .action-options button {
+    font-size: 14px;
+  }
+
+  .btn-quiz-review {
+    width: 160px;
+  }
+
+  .next-level button, button.btn-try-again {
+    width: 120px;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -314,9 +390,21 @@
   }
 
   .play .quiz-info {
-    font-size: 14px;
+    font-size: 13px;
     padding: 10px;
     border-radius: 8px;
+  }
+
+  .popup-tutorial {
+    width: 400px;
+  }
+
+  .popup-tutorial p {
+    font-size: 18px;
+  }
+
+  .button-popup-wrapper .start-tutorial {
+    font-size: 16px;
   }
 
   .quiz-title {
@@ -330,7 +418,7 @@
   }
 
   .main-quiz p {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .main-quiz #fraction {
@@ -339,6 +427,68 @@
   }
 
   .sub-quiz p {
+    font-size: 16px;
+  }
+
+  /* Leaderboard */
+
+  .unavailable-leaderboard p {
+    font-size: 28px;
+  }
+
+  .leaderboard-header p {
+    font-size: 13px;
+  }
+
+  .leaderboard-header p:nth-child(1) {
+    max-width: 65px;
+  }
+
+  .data-wrapper p:nth-child(1) {
+    max-width: 65px;
+  }
+
+  .leaderboard-header p:nth-child(2) {
+    max-width: 80px;
+  }
+
+  .avatar-field {
+    max-width: 80px;
+  }
+
+  .player-list .row {
+    height: 45px;
+  }
+
+  .avatar-frame img {
+    width: 40px;
+  }
+
+  .player-list .trophy {
+    height: 40px;
+    width: 38px;
+    transform: translate(-10px, 2px);
+  }
+
+  .data-wrapper p {
+    font-size: 14px;
+  }
+
+  .data-wrapper p:nth-child(4) {
+    width: 70px;
+    font-size: 16px;
+  }
+
+  .character {
+    max-width: 220px;
+  }
+
+  .result-game h1 {
+    font-size: 30px;
+  }
+
+  .action-options button {
+    padding: 10px 12px;
     font-size: 15px;
   }
 }
@@ -465,7 +615,8 @@
 
   .lobby {
     align-items: center;
-    margin-left: -120px;
+    /* margin-left: -120px; */
+    margin-right: 15%;
   }
 
   .cities {
@@ -569,16 +720,21 @@
   }
 
   .play-container {
-    /* height: 95%; */
+    height: 95% !important;
+    max-height: 500px;
   }
 
   /* Quiz In Game */
   .precis-wrapper {
-    left: 18%;
+    left: 15%;
   }
 
   .tutorial-instruction {
-    right: 17%;
+    right: 15%;
+  }
+
+  .dialog-tutorial {
+    max-width: 350px;
   }
 }
 
@@ -688,29 +844,19 @@
     font-size: 14px;
   }
 
-  .leaderboard-header p {
-    font-size: 12px;
-  }
+ 
 
-  .data-wrapper p {
-    font-size: 13px;
-  }
+  
 
-  .player-list .row {
+  /* .player-list .row {
     height: 38px;
-  }
+  } */
 
-  .player-list .trophy {
-    height: 38px;
-    width: 36px;
-  }
+  
 
-  .data-wrapper p:nth-child(4) {
-    padding: 13px 7px;
-    font-size: 15px;
-  }
-
+  
+/* 
   .avatar-frame img {
     width: 34px;
-  }
+  } */
 }

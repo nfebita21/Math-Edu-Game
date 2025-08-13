@@ -48,8 +48,9 @@ const Lobby = {
 
       const getStudentProgress = await DBSource.getStudentCityProgress(studentId, cityId);
       const studentProgress = getStudentProgress.data;
+      const studentHighScore = await DBSource.highScoreCity(studentId, cityId);
 
-      greetings.insertAdjacentHTML('beforebegin', createCitySliderTemplate(city, studentProgress.exp, rank));
+      greetings.insertAdjacentHTML('beforebegin', createCitySliderTemplate(city, studentHighScore['high_score'], rank));
 
       currentSlide = document.querySelectorAll('.slide-wrapper')[index];
       cityPic = currentSlide.querySelector('.city-picture');
@@ -228,22 +229,21 @@ const Lobby = {
   },
 
   async _getStudentCityRank(cityId, studentId) {
-    const getCityProgress = await DBSource.getCityProgress(cityId);
-    const cityProgress = getCityProgress.data;
-    const filteredCityProgress = cityProgress.filter(visitor => visitor.exp > 0);
+    const rankList = await DBSource.cityLeaderboard(cityId);
+    // const filteredCityProgress = cityProgress.filter(visitor => visitor.exp > 0);
     let rank;
 
-    if (filteredCityProgress.length === 1) {
-      if (filteredCityProgress[0]['student_id'] === studentId){
+    if (rankList.length === 1) {
+      if (rankList[0]['student_id'] === studentId){
         rank = 1;
       } else {
         rank = '-';
       }
-    } else if (filteredCityProgress.length > 1){
-      const isStudentAvailable = filteredCityProgress.filter(visitor => visitor['student_id'] === studentId);
+    } else if (rankList.length > 1){
+      const isStudentAvailable = rankList.filter(player => player['student_id'] === studentId);
       if (isStudentAvailable.length !== 0) {
-        filteredCityProgress.sort((a, b) => b.exp - a.exp);
-        const index = filteredCityProgress.findIndex(visitor => visitor['student_id'] === studentId);
+        // filteredCityProgress.sort((a, b) => b.exp - a.exp);
+        const index = rankList.findIndex(player => player['student_id'] === studentId);
         rank = index + 1;
       } else {
         rank = '-'

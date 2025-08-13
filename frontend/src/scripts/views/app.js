@@ -81,8 +81,7 @@ class App {
         // Update student in database
         const student = JSON.parse(localStorage.getItem('user'));
         const identityNumber = student['identity_number'];
-        const gender = student['gender'];
-        const avatarUrl = newImgUrl.split(`./avatar/${gender}/`)[1];
+        const avatarUrl = newImgUrl.split(`./avatar/`)[1];
         const result = await DBSource.updateStudent(identityNumber, newPlayerName, avatarUrl);
         if (result.statusCode === 200) {
           await this._updateStudentOnReload(identityNumber);
@@ -159,18 +158,16 @@ class App {
     let currentPlayerName = document.querySelector('.user-identity__name').innerText;
     let currentImgUrl = document.querySelector('.user-identity__photo img').getAttribute('src');
     const student = JSON.parse(localStorage.getItem('user'));
-    const gender = student['gender']
     currentPlayerName = student['nick_name'];
-    currentImgUrl = `./avatar/${gender}/${student['avatar_url']}`;
+    currentImgUrl = `./avatar/${student['avatar_url']}`;
     
 
     btnOpenModal.addEventListener('click', () => {
       modalContainer.style.display = 'block';
 
       const student = JSON.parse(localStorage.getItem('user'));
-      const gender = student['gender']
       currentPlayerName = student['nick_name'];
-      currentImgUrl = `./avatar/${gender}/${student['avatar_url']}`;
+      currentImgUrl = `./avatar/${student['avatar_url']}`;
       
       inputName.value = currentPlayerName;
       avatarViewImg.src = currentImgUrl;
@@ -243,6 +240,7 @@ class App {
 
         option.classList.add('chosen');
         avatarViewImg.src = newImgUrl;
+        console.log(newPlayerName, newImgUrl);
 
         this._dataChangesChecker(currentPlayerName, newPlayerName, currentImgUrl, newImgUrl)
         

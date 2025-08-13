@@ -7,7 +7,7 @@ const API_ENDPOINT = {
   signUp: `${BASE_URL}/sign-up`,
   updateStudent: (number) => `${BASE_URL}/students/${number}`,
   protected: `${BASE_URL}/protected`,
-  totalExp: (id) => `${BASE_URL}/students/${id}/total-exp`,
+  getTotalScore: (id) => `${BASE_URL}/students/${id}/total-score`,
   city: `${BASE_URL}/city`,
   getCityByName: (cityName) => `${BASE_URL}/city/${cityName}`,
   studentCityProgress: (studentId, cityId) => `${BASE_URL}/students/${studentId}/${cityId}`,
@@ -17,7 +17,23 @@ const API_ENDPOINT = {
   buyCity: (studentId) => `${BASE_URL}/students/${studentId}/buy-city`,
   modul: (cityId) => `${BASE_URL}/city/modul/${cityId}`,
   modulById: (id) => `${BASE_URL}/modul/${id}`,
-  cityReward: (cityId) => `${BASE_URL}/city/reward/${cityId}`
+  cityReward: (cityId, level) => `${BASE_URL}/city/reward?cityId=${cityId}&level=${level}`,
+  quizProgress: (id) => `${BASE_URL}/quiz-progress/${id}`,
+  studentQuizProgress: (studentId, modulId, level) => `${BASE_URL}/quiz-progress/${studentId}/${modulId}/${level}`,
+  newQuizProgress: (studentId) => `${BASE_URL}/quiz-progress/new/${studentId}`,
+  tutorialPassed: (quizProgressId) => `${BASE_URL}/quiz-progress/tutorial-passed/${quizProgressId}`,
+  rewardConversion: (cityId, rewardName) => `${BASE_URL}/quiz-progress/reward/${cityId}/${rewardName}`,
+  gameResultTemplate: (cityId) => `${BASE_URL}/city/quiz-result-template/${cityId}`,
+  getHighScore: (studentId, cityId, level) => `${BASE_URL}/quiz-progress/high-score?studentId=${studentId}&cityId=${cityId}&level=${level}`,
+  postNewQuiz: (studentId, cityId, level) => `${BASE_URL}/quiz-progress/start-quiz?studentId=${studentId}&cityId=${cityId}&level=${level}`,
+  saveHistory: (historyId) => `${BASE_URL}/quiz-progress/save-history?id=${historyId}`,
+  addCandy: (studentId) => `${BASE_URL}/students/${studentId}/add-candy`,
+  getCityHighScore: (studentId, cityId) => `${BASE_URL}/city/high-score?studentId=${studentId}&cityId=${cityId}`,
+  getCityLeaderboard: (cityId) => `${BASE_URL}/city/leaderboard/${cityId}`,
+  searchPassedQuizzes: (studentId, cityId, level) => `${BASE_URL}/quiz-progress/search-passed-quizzes?studentId=${studentId}&cityId=${cityId}&level=${level}`,
+  getLevelProgress: (cityId, studentId) => `${BASE_URL}/city/level-progress?cityId=${cityId}&studentId=${studentId}`,
+  getLevel: (cityId, levelNum) => `${BASE_URL}/city/level?cityId=${cityId}&levelNumber=${levelNum}`,
+  getQuiz: (modulId, level) => `${BASE_URL}/modul/quiz?modulId=${modulId}&level=${level}`,
 }
 
 export default API_ENDPOINT;

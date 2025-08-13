@@ -1,12 +1,12 @@
-import { fractionAbilityToSimplifyChecking, fractionMultiplicationChecking, illustrationChoicesChecking, resultFractionMultiplicationChecking } from "../utils/answerChecker";
+import { fractionAbilityToSimplifyChecking, fractionResultChecking, fractionSetQuestionChecking, illustrationChoicesChecking, simplestFractionChecking } from "../utils/answerChecker";
 import { calcHandler, fractionToggler, multiChoicesHandler, numberInputValidation, openImageDetail, submitStepHandler } from "../utils/play-handler";
-import { fractionAbilityToSimplify, fractionMultiplication, glProgressBar, illustrationChoices, resultFractionMultiplication } from "../views/templates/template-creator";
+import { createResultGameGL, fractionAbilityToSimplify, glProgressBar, illustrationChoices, fractionSetQuestion, simplestFractionAnswer, fractionResult, multiplicationFractionForm } from "../views/templates/template-creator";
 
 const functionMap = {
-  fractionMultiplication,
-  fractionMultiplicationChecking,
-  resultFractionMultiplication,
-  resultFractionMultiplicationChecking,
+  fractionSetQuestion,
+  fractionSetQuestionChecking,
+  fractionResult,
+  fractionResultChecking,
   fractionAbilityToSimplify,
   fractionAbilityToSimplifyChecking,
   numberInputValidation,
@@ -14,10 +14,14 @@ const functionMap = {
   fractionToggler,
   submitStepHandler,
   multiChoicesHandler,
+  simplestFractionAnswer,
   illustrationChoices,
   openImageDetail,
   glProgressBar, 
-  illustrationChoicesChecking
+  illustrationChoicesChecking,
+  simplestFractionChecking,
+  createResultGameGL,
+  multiplicationFractionForm
 }
 
 export default functionMap;

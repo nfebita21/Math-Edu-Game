@@ -15,7 +15,7 @@ const routes = {
   '/login': Login,
   '/sign-up': SignUp,
   '/game/:cityName': Level,
-  '/game/:cityName/play': Play,
+  '/game/:cityName/:level/play': Play,
 }
 
 export default routes;

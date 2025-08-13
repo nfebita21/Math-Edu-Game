@@ -1,10 +1,10 @@
 const Avatars = {
-  man: [
+  boy: [
     'boy-1.png',
     'dinosaur.png',
     'boy-2.png',
   ],
-  woman: [
+  girl: [
     'girl-1.png',
     'dinosaur.png',
     'girl-2.png'

@@ -55,11 +55,11 @@ const quizOption = [
     choices: [
       {
         answer: 'gl-1-1a.png',
-        isCorrect: true
+        isCorrect: false
       },
       {
         answer: 'gl-1-1b.png',
-        isCorrect: false
+        isCorrect: true
       }
     ]
   },
@@ -121,11 +121,11 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-2a.jpg',
+        answer: 'gl-1-2a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-2b.jpg',
+        answer: 'gl-1-2b.png',
         isCorrect: false
       }
     ]
@@ -185,11 +185,11 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-3a.jpg',
+        answer: 'gl-1-3a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-3b.jpg',
+        answer: 'gl-1-3b.png',
         isCorrect: false
       }
     ]
@@ -249,11 +249,11 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-4a.jpg',
+        answer: 'gl-1-4a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-4b.jpg',
+        answer: 'gl-1-4b.png',
         isCorrect: false
       }
     ]
@@ -334,11 +334,11 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-5a.jpg',
+        answer: 'gl-1-5a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-5b.jpg',
+        answer: 'gl-1-5b.png',
         isCorrect: false
       }
     ]
@@ -419,11 +419,11 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-6a.jpg',
+        answer: 'gl-1-6a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-6b.jpg',
+        answer: 'gl-1-6b.png',
         isCorrect: false
       }
     ]
@@ -435,7 +435,7 @@ const quizOption = [
     subQuizId: 1,
     choices: [
       {
-        answer: '2/5*10',
+        answer: '8/10*5',
         isCorrect: true
       }
     ] 
@@ -447,15 +447,15 @@ const quizOption = [
     subQuizId: 2,
     choices: [
       {
-        answer: '20/5',
+        answer: '40/10',
         isCorrect: true
       },
       {
-        answer: '10/5',
+        answer: '13/10',
         isCorrect: false
       },
       {
-        answer: '12/5',
+        answer: '20/10',
         isCorrect: false
       }
     ]
@@ -488,7 +488,7 @@ const quizOption = [
         isCorrect: true
       },
       {
-        answer: '5',
+        answer: '8',
         isCorrect: false
       },
       {
@@ -504,11 +504,11 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-7a.jpg',
+        answer: 'gl-1-7a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-7b.jpg',
+        answer: 'gl-1-7b.png',
         isCorrect: false
       }
     ]
@@ -588,11 +588,11 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-8a.jpg',
+        answer: 'gl-1-8a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-8b.jpg',
+        answer: 'gl-1-8b.png',
         isCorrect: false
       }
     ]
@@ -604,7 +604,7 @@ const quizOption = [
     subQuizId: 1,
     choices: [
       {
-        answer: '8/10*5',
+        answer: '3/4*2',
         isCorrect: true
       }
     ]
@@ -616,15 +616,15 @@ const quizOption = [
     subQuizId: 2,
     choices: [
       {
-        answer: '40/10',
+        answer: '6/4',
         isCorrect: true
       },
       {
-        answer: '13/10',
+        answer: '5/4',
         isCorrect: false
       },
       {
-        answer: '20/10',
+        answer: '17/4',
         isCorrect: false
       }
     ]
@@ -652,15 +652,15 @@ const quizOption = [
     subQuizId: 4,
     choices: [
       {
-        answer: '4',
+        answer: '3/2',
         isCorrect: true
       },
       {
-        answer: '8',
+        answer: '1/4',
         isCorrect: false
       },
       {
-        answer: '10',
+        answer: '1/2',
         isCorrect: false
       }
     ]
@@ -672,11 +672,11 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-9a.jpg',
+        answer: 'gl-1-9a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-9b.jpg',
+        answer: 'gl-1-9b.png',
         isCorrect: false
       }
     ]
@@ -688,7 +688,7 @@ const quizOption = [
     subQuizId: 1,
     choices: [
       {
-        answer: '12/6*8',
+        answer: '5/6*2',
         isCorrect: true
       }
     ]
@@ -700,15 +700,15 @@ const quizOption = [
     subQuizId: 2,
     choices: [
       {
-        answer: '96/6',
+        answer: '10/6',
         isCorrect: true
       },
       {
-        answer: '86/6',
+        answer: '7/6',
         isCorrect: false
       },
       {
-        answer: '20/6',
+        answer: '10/3',
         isCorrect: false
       }
     ]
@@ -736,15 +736,15 @@ const quizOption = [
     subQuizId: 4,
     choices: [
       {
-        answer: '32/3',
+        answer: '5/3',
         isCorrect: true
       },
       {
-        answer: '23/3',
+        answer: '10/3',
         isCorrect: false
       },
       {
-        answer: '32/6',
+        answer: '5/6',
         isCorrect: false
       }
     ]
@@ -756,11 +756,179 @@ const quizOption = [
     subQuizId: 5,
     choices: [
       {
-        answer: 'gl-1-10a.jpg',
+        answer: 'gl-1-10a.png',
         isCorrect: true
       },
       {
-        answer: 'gl-1-10b.jpg',
+        answer: 'gl-1-10b.png',
+        isCorrect: false
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 11,
+    subQuizId: 1,
+    choices: [
+      {
+        answer: '5/6*2/3',
+        isCorrect: true
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 11,
+    subQuizId: 2,
+    choices: [
+      {
+        answer: '10/18',
+        isCorrect: true
+      },
+      {
+        answer: '10/9',
+        isCorrect: false
+      },
+      {
+        answer: '7/9',
+        isCorrect: false
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 11,
+    subQuizId: 3,
+    choices: [
+      {
+        answer: 'Ya',
+        isCorrect: true
+      },
+      {
+        answer: 'Tidak',
+        isCorrect: false
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 11,
+    subQuizId: 4,
+    choices: [
+      {
+        answer: '5/9',
+        isCorrect: true
+      },
+      {
+        answer: '5/18',
+        isCorrect: false
+      },
+      {
+        answer: '5/8',
+        isCorrect: false
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 10,
+    subQuizId: 5,
+    choices: [
+      {
+        answer: 'gl-1-11a.png',
+        isCorrect: true
+      },
+      {
+        answer: 'gl-1-11b.png',
+        isCorrect: false
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 12,
+    subQuizId: 1,
+    choices: [
+      {
+        answer: '3/4*4/5',
+        isCorrect: true
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 12,
+    subQuizId: 2,
+    choices: [
+      {
+        answer: '12/20',
+        isCorrect: true
+      },
+      {
+        answer: '7/20',
+        isCorrect: false
+      },
+      {
+        answer: '12/25',
+        isCorrect: false
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 11,
+    subQuizId: 3,
+    choices: [
+      {
+        answer: 'Ya',
+        isCorrect: true
+      },
+      {
+        answer: 'Tidak',
+        isCorrect: false
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 11,
+    subQuizId: 4,
+    choices: [
+      {
+        answer: '3/5',
+        isCorrect: true
+      },
+      {
+        answer: '6/10',
+        isCorrect: false
+      },
+      {
+        answer: '4/5',
+        isCorrect: false
+      }
+    ]
+  },
+  {
+    modulId: 'PD',
+    level: 1,
+    mainQuizId: 10,
+    subQuizId: 5,
+    choices: [
+      {
+        answer: 'gl-1-12a.png',
+        isCorrect: true
+      },
+      {
+        answer: 'gl-1-12b.png',
         isCorrect: false
       }
     ]

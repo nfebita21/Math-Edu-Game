@@ -8,8 +8,8 @@ class HeaderController {
     const nickNameValue = user['nick_name'];
     const candyValue = user['candy'];
     const studentId = user['id'];
-    const getTotalExp = await DBSource.getTotalExpStudent(studentId);
-    const totalExp = getTotalExp['result']['total_exp'];
+    const totalScoreRequest = await DBSource.totalScoreStudent(studentId);
+    const totalScore = totalScoreRequest['total_score'];
 
     let avatarImg = headerElement.querySelector('.avatar-img');
     let fullName = headerElement.querySelector('#fullName');
@@ -21,7 +21,7 @@ class HeaderController {
     fullName.innerText = fullNameValue;
     nickName.innerText = nickNameValue;
     candy.innerText = candyValue;
-    exp.innerText = `Total Skor: ${totalExp}`;
+    exp.innerText = `Total Skor: ${totalScore}`;
 
     headerElement.classList.add('show');
   }

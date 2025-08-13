@@ -45,10 +45,6 @@ const Level = {
             </button>
           </div>
           <div class="modal-mission__content">
-            <p class="mission-GL">
-              Di kota Green Land, kamu akan mengumpulkan tanaman yang didapatkan selama bermain. Semakin banyak jawaban yang berhasil dijawab dengan benar, maka semakin tumbuh dengan sempurna tanaman yang didapatkan.<br/> Setiap tanaman yang didapat akan ditukarkan dengan candy pada akhir permainan. Setiap jenis tanaman memiliki nilai candy yang berbeda-beda tergantung tingkatannya: <br/>
-                <img src="plants-convert.png">
-            </p>
           </div>
           <button class="btn-ok">Oke, mengerti!</button>
         </div>
@@ -64,8 +60,17 @@ const Level = {
     const highScoreEl = document.querySelector('.high-score');
     const btnCloseMission = document.querySelector('.modal-mission .btn-close');
     const missionModal = document.querySelector('.modal-mission');
+    const missionContent = document.querySelector('.modal-mission__content');
     const btnMission = document.querySelector('.btn-mission');
     const btnOkMission = document.querySelector('.modal-mission .btn-ok');
+
+    const url = UrlParser.parseActiveUrlWithoutCombiner();
+    const cityName = url.cityName;
+    const getCity = await DBSource.getCityByName(cityName);
+    const city = getCity.data[0];
+    console.log(city.mission);
+    missionContent.innerHTML = city.mission;
+    
 
     const from = sessionStorage.getItem('from');
 
@@ -75,19 +80,21 @@ const Level = {
       sessionStorage.removeItem('from');
       setTimeout(() => {
         missionModal.classList.remove('hide'); 
+        
         this._unableButton();     
       }, 500);
     }
 
-    const url = UrlParser.parseActiveUrlWithoutCombiner();
     
-    const cityName = url.cityName;
+    
+    
     const backgroundURL = `url(./wallpapers/${cityName.replace('%20', '-')}/1.png)`;
     levelContainer.style.backgroundImage = backgroundURL;
     content.style.padding = 0;
 
-    const getCity = await DBSource.getCityByName(cityName);
-    const city = getCity.data[0];
+    
+    
+
     const getModul = await DBSource.getModul(city.id);
     const modul = getModul.data[0];
     const levelTitle = document.querySelector('.title-text span');
@@ -95,27 +102,47 @@ const Level = {
 
     
     const student = JSON.parse(localStorage.getItem('user'));
-    const getScore = await DBSource.getStudentCityProgress(student.id, city.id);
-    highScoreEl.innerText = getScore.data.exp;
+    const getScore = await DBSource.highScoreCity(student.id, city.id);
+    highScoreEl.innerText = getScore['high_score'];
+
+    const getLevelProgress = await DBSource.levelProgress(city.id, student.id);
+    const levels = getLevelProgress.data;
 
     const buttonWrapper = document.querySelector('.button-wrapper');
-    for (let i = 0; i < modul['num_of_level']; i++) {
-      buttonWrapper.innerHTML += createButtonLevel(i+1);
-    }
+    // for (let i = 0; i < levels.length; i++) {
+    //   buttonWrapper.innerHTML += createButtonLevel(i+1);
+    // }
 
-    const button = document.querySelectorAll('.button-lv-pushable');
-    button.forEach((opt, index) => {
-      const buttonText = opt.querySelector('.button-lv-front');
-      if (index > 3) {
-        opt.classList.add('locked');
-        buttonText.innerHTML += '<i class="fa-solid fa-lock"></i>'
+    levels.forEach((lv, index) => {
+      buttonWrapper.insertAdjacentHTML('beforeend', createButtonLevel(lv.level));
+      const currentBtn = buttonWrapper.lastElementChild;
+      console.log(currentBtn);
+      const buttonText = currentBtn.querySelector('.button-lv-front');
+      if (lv['is_locked'] === 1) {
+        currentBtn.classList.add('locked');
+        buttonText.innerHTML += '<i class="fa-solid fa-lock"></i>';
       }
 
-      opt.addEventListener('click', () => {
-        const numLevel = index + 1;
-        window.location.href = `#/game/${url.cityName}/level/${numLevel}/tutorial`;
-      })
-    });
+      currentBtn.addEventListener('click', () => {
+        sessionStorage.setItem('level', lv.level);
+        window.location.href = `#/game/${url.cityName}/${lv.level}/play`;
+      });
+    })
+
+    // const button = document.querySelectorAll('.button-lv-pushable');
+    // button.forEach((opt, index) => {
+    //   const buttonText = opt.querySelector('.button-lv-front');
+    //   if (index > 3) {
+    //     opt.classList.add('locked');
+    //     buttonText.innerHTML += '<i class="fa-solid fa-lock"></i>';
+    //   }
+
+    //   opt.addEventListener('click', () => {
+    //     const numLevel = index + 1;
+    //     sessionStorage.setItem('level', numLevel);
+    //     window.location.href = `#/game/${url.cityName}/level/${numLevel}/tutorial`;
+    //   })
+    // });
 
     const btnBack = document.querySelector('#btnBack');
     btnBack.addEventListener('click', () => {

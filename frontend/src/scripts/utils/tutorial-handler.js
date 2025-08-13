@@ -119,13 +119,7 @@ const TutorialHandler = [
           correctButton = `.answer-choices button.${btn.classList}`;
         }
       });
-      console.log(correctButton);
       pointElement(correctButton);
-      const handleClick = (e) => {
-        
-        console.log(e.target);
-        return;
-      }
     }
   }
 ];
