@@ -29,8 +29,8 @@ const fractionSetQuestionChecking = (detail) => {
   secondNum = secondFractionContainer ? secondFractionContainer.querySelector('#numerator').value + '/' + secondFractionContainer.querySelector('#denominator').value : secondNum;
   
   answer = `${firstNum}${operator}${secondNum}`;
-  console.log(answer, correctAnswer)
-  return answer === correctAnswer || answer === reversedAnswer;
+  const isCorrect = operator === "*" ? answer === correctAnswer || answer === reversedAnswer : answer === correctAnswer;
+  return isCorrect;
 }
 
 const fractionResultChecking = (detail) => {
