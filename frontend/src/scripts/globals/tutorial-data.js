@@ -138,7 +138,7 @@ const tutorialData = {
       7: [ // Step 1
         { action: (next) => actions.toggleOverlay(next) },
         { action: (next) => setTimeout(() => actions.focus(next, ['.gl-progress-bar']), 1000) },
-        { action: (next) => setTimeout(() => actions.showGuide(next, '.gl-progress-bar', 'Di level ini kamu akan mengumpulkan jamur yang memiliki berbagai tingkatan. Kumpulkan spora dengan menjawab pertanyaan dengan benar untuk meningkatkan level jamur! ', ['0', 'unset']), 1000) },
+        { action: (next) => setTimeout(() => actions.showGuide(next, '.gl-progress-bar', 'Di level ini kamu akan mengumpulkan <b>jamur</b> yang memiliki berbagai tingkatan. Kumpulkan <b>spora</b> dengan menjawab pertanyaan dengan benar untuk meningkatkan level <b>jamur</b>! ', ['0', 'unset']), 1000) },
         { action: (next) => actions.showGuide(next, '.gl-progress-bar', 'Tanda melingkar sebagai tanda posisi step yang sedang dikerjakan.', ['unset', '0']) },
         { action: (next) => actions.focus(next, ['.main-quiz']) },
         { action: (next) => setTimeout(() => actions.showGuide(next, '.main-quiz', 'Soal kuis utama. Baca dan pahami sebelum mengerjakan!', ['0', 'unset']), 1000) },
@@ -207,10 +207,17 @@ const tutorialData = {
         { action: (next) => actions.showPointer(next, '.btn-submit-result__container', 'Submit Jawaban') },
       ],
       10: [
+        { action: (next) => actions.toggleOverlay(next) },
         { action: (next) => setTimeout(() => actions.showClue(next, 'Pecahan <span id="fractionClue"><span id="fraction"><span class="numerator">4</span><span class="denominator">1</span></span></span> artinya 4 ÷ 1. <br/> Bila pecahan bisa dibagi, berarti pecahan bisa disederhanakan.', '.result', ['unset', '150px']), 1000) },
+        { action: (next) => setTimeout(() => actions.showGuide(next, '.tutorial-clue', 'Sudah mengerti?', ['-10px', '0']), 4500) },
+        { action: (next) => actions.toggleOverlay(next) },
+        { action: (next) => actions.showPointer(next, '.answer-choices .yes', 'Pilih jawaban yang tepat.') }
       ],
       11: [
-        { action: (next) => actions.showPointer(next, '.', 'Masukkan hasil perkalian') },
+        { action: (next) => actions.showPointer(next, '.btn-next-step:nth-child(1)', 'Pilih jawaban yang tepat.', '.result', '70px') }
+      ],
+      12: [
+        { action: (next) => actions.showPointer(next, '.option-a', 'Pilih ilustrasi yang tepat.', '.result', '100px') }
       ]
     }
   }

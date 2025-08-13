@@ -860,7 +860,7 @@ const createPopupAfterTutorialPassed = (isRepeatTutorial) => isRepeatTutorial ? 
   <div class="popup-overlay">
     <div class="popup-tutorial after-passed">
       <img class="popup-img" src="check.png">
-      <p>Kamu sudah melewati tutorial. Langsung mulai kuis?</p>
+      <p>Kamu sudah menyelesaikan tutorial. Langsung mulai kuisnya?</p>
       <div class="button-popup-wrapper">
         <button id="start-quiz" class="start-quiz">Mulai Kuis</button>
       </div>
