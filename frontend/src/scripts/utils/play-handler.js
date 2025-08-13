@@ -11,14 +11,22 @@ import { calculateOverallValue, hasPassedOverall, saveQuiz, scoringHandler, star
 import TutorialHandler from "./tutorial-handler";
 
 const numberInputValidation = () => {
-  const numberInput = document.querySelectorAll('.number-input.show');
-  numberInput[0].focus();
+  // const numberInput = document.querySelectorAll('.number-input.show');
+  // numberInput[0].focus();
+  // console.log('dipanggil')
 
-  numberInput.forEach(input => {
-    input.addEventListener('input', () => {
-      input.value = input.value.replace(/[^0-9]/g, '');
+  // numberInput.forEach(input => {
+  //   input.addEventListener('input', () => {
+  //     input.value = input.value.replace(/[^0-9]/g, '');
+  //     areAllInputsFilledIn();
+  //   });
+  // });
+
+  document.addEventListener('input', (e) => {
+    if (e.target.classList.contains('number-input')) {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
       areAllInputsFilledIn();
-    });
+    }
   });
 };
 
