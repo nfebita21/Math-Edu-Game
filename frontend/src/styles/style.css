@@ -2338,6 +2338,7 @@ img.padlock {
   transform: scaleY(0);
   transform-origin: top; /* agar tumbuh dari atas */
   transition: transform 0.5s ease-out, opacity 0.3s ease-out;
+  z-index: 1;
 }
 
 .gl-progress-bar .milestone.show {
