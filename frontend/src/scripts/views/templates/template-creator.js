@@ -69,7 +69,7 @@ const createCitySliderTemplate = (city, studentExp, rank) => `
 const createGreetingBubble = (username) => `
   <div class="bubble-chat">
     <img src="bubble.png" >
-    <p>Halo <span>${username}</span>,  rasakan nuansa berbagai macam kota dengan bermain game matematika!</p>
+    <p>Halo <span>${username}</span>,  ayo kunjungi berbagai kota menarik dengan bermain game matematika!</p>
   </div>
 `;
 
