@@ -7,20 +7,10 @@ import subQuiz from "../globals/sub-quiz";
 import UrlParser from "../routes/url-parser";
 import Play from "../views/pages/play";
 import { createPopupAfterTutorialPassed, createResultGameGL } from "../views/templates/template-creator";
-import { calculateOverallValue, hasPassedOverall, saveQuiz, scoringHandler, startQuiz } from "./quiz";
+import { calculateOverallValue, hasPassedOverall, saveAnswerDetail, saveQuiz, scoringHandler, startQuiz } from "./quiz";
 import TutorialHandler from "./tutorial-handler";
 
 const numberInputValidation = () => {
-  // const numberInput = document.querySelectorAll('.number-input.show');
-  // numberInput[0].focus();
-  // console.log('dipanggil')
-
-  // numberInput.forEach(input => {
-  //   input.addEventListener('input', () => {
-  //     input.value = input.value.replace(/[^0-9]/g, '');
-  //     areAllInputsFilledIn();
-  //   });
-  // });
 
   document.addEventListener('input', (e) => {
     if (e.target.classList.contains('number-input')) {
@@ -184,8 +174,7 @@ const submitStepHandler = async (mainId, stepQuiz, stepId) => {
 
       await progressBarHandler(stepNumber, isQuizPassed, mainId, stepId, isGroupedStep);
       stepIndex = stepIndex + 1;
-
-      // const currentStep = stepQuiz.find(step => step.id === stepId);
+      const correctStepPerQuiz = Number(sessionStorage.getItem('correctStepPerQuiz'));
       scoringHandler(isQuizPassed, currentStep.score);
 
       if (stepNumber < stepCount) { 
@@ -195,7 +184,7 @@ const submitStepHandler = async (mainId, stepQuiz, stepId) => {
         resultWrapper.remove(); // remove result quiz
         
         await Play.displayStep(mainId, stepQuiz, stepIndex);
-      } else { // If step quiz finish
+      } else { // If quiz finish
         const quizWrapper = document.querySelector('.quiz-content');
         quizWrapper.innerHTML = ''; // reset quiz
 
@@ -209,6 +198,7 @@ const submitStepHandler = async (mainId, stepQuiz, stepId) => {
         const isThisWithTutorial = Number(sessionStorage.getItem('isThisWithTutorial'));
 
         if (quizIndex === 5) {
+          await saveAnswerDetail(mainId, correctStepPerQuiz);
           processQuizResult();
         } else if (isThisWithTutorial && quizIndex === 1) {
           const quizProgressId = sessionStorage.getItem('quizProgressId');
@@ -233,7 +223,7 @@ const submitStepHandler = async (mainId, stepQuiz, stepId) => {
             return;
           });
         } else if (quizIndex >= 0 && quizIndex < 5){
-          const correctStepPerQuiz = Number(sessionStorage.getItem('correctStepPerQuiz'));
+          await saveAnswerDetail(mainId, correctStepPerQuiz);
           await showCharFeedback(correctStepPerQuiz);
         
           Play.displayQuiz(detailQuiz, mainIndex, quizIndex);        
