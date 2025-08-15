@@ -1763,6 +1763,7 @@ img.padlock {
   font-size: 17px;
   font-family: "Acme",serif;
   word-spacing: 3px;
+  line-height: calc(100% + 10px);
 }
 
 .modal-mission__content:has(.mission-GL) {
