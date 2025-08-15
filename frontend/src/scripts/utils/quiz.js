@@ -124,4 +124,4 @@ const addCandyToWallet = async (amount) => {
 }
 
 
-export { renderFractionText, startQuiz, scoringHandler, getLetterGrade, calculateOverallValue, getValueColor, getvalueLabel, hasPassedOverall, saveQuiz };
+export { renderFractionText, startQuiz, scoringHandler, getLetterGrade, calculateOverallValue, getValueColor, getvalueLabel, hasPassedOverall, saveQuiz, addQuizDetail, saveAnswerDetail };
