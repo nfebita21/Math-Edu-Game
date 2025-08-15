@@ -3,15 +3,6 @@ import connection from '../db.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-  try {
-    const query = 'SELECT * FROM student';
-    const [result] = await connection.query(query);
-    res.status(200).json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 router.get('/search/:identityNumber', async (req, res) => {
   try {
@@ -52,22 +43,7 @@ router.get('/gallery/:studentId', async (req, res) => {
   }
 });
 
-router.put('/:identityNumber', async (req, res) => {
-  const { identityNumber } = req.params;
 
-  const { nickName, avatarUrl } = req.body;
-
-  try {
-    const [result] = await connection.query('UPDATE student set nick_name = ?, avatar_url = ?, is_setup = 1 WHERE identity_number = ?', [nickName, avatarUrl, identityNumber]);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Student not found'});
-    }
-    res.status(200).json({ message: 'Student updated succesfully', statusCode: 200});
-  } catch(err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 router.get('/:studentId/total-score', async (req, res) => {
   try {
@@ -95,15 +71,6 @@ router.get('/:studentId/:cityId', async (req, res) => {
   }
 });
 
-router.get('/leaderboard', async (req, res) => {
-  try {
-    const query = 'SELECT s.nick_name, s.avatar_url, SUM(qh.score) AS total_score FROM quiz_history qh INNER JOIN student s on qh.student_id = s.id GROUP BY s.id HAVING total_score > 0 ORDER BY total_score DESC';
-    const result = await connection.query(query);
-    res.json({ data: result[0] });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 router.put('/:studentId/buy-city', async (req, res) => {
   const { studentId } = req.params;
@@ -135,5 +102,61 @@ router.put('/:studentId/add-candy', async (req, res) => {
   }
 });
 
+router.get('/leaderboard', async (req, res) => {
+  try {
+    const query = 'SELECT s.nick_name, s.avatar_url, SUM(qh.score) AS total_score FROM quiz_history qh INNER JOIN student s on qh.student_id = s.id GROUP BY s.id HAVING total_score > 0 ORDER BY total_score DESC';
+    const result = await connection.query(query);
+    res.json({ data: result[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/process-quiz-complete', async (req, res) => {
+  // const { studentId, cityId, level } = req.query;
+  const { mainId, historyId, isPassed, detailAnswer } = req.body;
+  // const answerList = JSON.parse(detailAnswer);
+
+  // History Saving
+  try {
+    const query = "INSERT INTO quiz_history_detail (history_id, main_id, step_id, answer, is_correct) VALUES (?, ?, ?, ?, ?)";
+
+    await Promise.all(detailAnswer.map(answer => 
+      connection.query(query, 
+        [historyId, mainId, answer.stepId, answer.answer, answer.isCorrect])
+    ));
+
+    res.json({ message: 'Quiz answer successfully saved' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put('/:identityNumber', async (req, res) => {
+  const { identityNumber } = req.params;
+
+  const { nickName, avatarUrl } = req.body;
+
+  try {
+    const [result] = await connection.query('UPDATE student set nick_name = ?, avatar_url = ?, is_setup = 1 WHERE identity_number = ?', [nickName, avatarUrl, identityNumber]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Student not found'});
+    }
+    res.status(200).json({ message: 'Student updated succesfully', statusCode: 200});
+  } catch(err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/', async (req, res) => {
+  try {
+    const query = 'SELECT * FROM student';
+    const [result] = await connection.query(query);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 export default router;

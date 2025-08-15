@@ -263,6 +263,18 @@ class DBSource {
     return responseJson;
   }
 
+  static async quizCompleteHandler(mainId, historyId, isPassed, detailAnswer) {
+    const response = await fetch(API_ENDPOINT.processQuizComplete(), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({mainId, historyId, isPassed, detailAnswer})
+    });
+
+    const responseJson = await response.json();
+    return responseJson;
+  }
   
 }
 
