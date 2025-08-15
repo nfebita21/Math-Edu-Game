@@ -96,6 +96,27 @@ const saveQuiz = async (dataToUpdated) => {
   await addCandyToWallet(totalCandy);
 }
 
+const addQuizDetail = (stepId, answer, isCorrect) => {
+  const answerDetail = JSON.parse(sessionStorage.getItem('answerDetail'));
+  answerDetail.push({stepId, answer, isCorrect});
+
+  sessionStorage.setItem('answerDetail', JSON.stringify(answerDetail));
+}
+
+const saveAnswerDetail = async (mainId, correctStepPerQuiz) => {
+  const answerDetail = JSON.parse(sessionStorage.getItem('answerDetail'));
+  const historyId = sessionStorage.getItem('historyId');
+
+  const detailQuiz = JSON.parse(sessionStorage.getItem('detailQuiz'));
+  const totalStep = detailQuiz.sub.at(-1).step;
+  const valuePerQuestion = correctStepPerQuiz / totalStep * 100;
+  const isPassed = valuePerQuestion >= 70;
+
+  const save = await DBSource.quizCompleteHandler(mainId, historyId, isPassed, answerDetail);
+
+  console.log(save);
+}
+
 const addCandyToWallet = async (amount) => {
   const student = JSON.parse(localStorage.getItem('user'));
   const studentId = student.id;
