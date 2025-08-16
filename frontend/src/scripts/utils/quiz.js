@@ -103,7 +103,7 @@ const addQuizDetail = (stepId, answer, isCorrect) => {
   sessionStorage.setItem('answerDetail', JSON.stringify(answerDetail));
 }
 
-const saveAnswerDetail = async (mainId, correctStepPerQuiz) => {
+const saveAnswerDetail = async (cityId, mainId, correctStepPerQuiz) => {
   const answerDetail = JSON.parse(sessionStorage.getItem('answerDetail'));
   const historyId = sessionStorage.getItem('historyId');
 
@@ -111,10 +111,13 @@ const saveAnswerDetail = async (mainId, correctStepPerQuiz) => {
   const totalStep = detailQuiz.sub.at(-1).step;
   const valuePerQuestion = correctStepPerQuiz / totalStep * 100;
   const isPassed = valuePerQuestion >= 70;
+  const student = JSON.parse(localStorage.getItem('user'));
 
-  const save = await DBSource.quizCompleteHandler(mainId, historyId, isPassed, answerDetail);
+  const data = await DBSource.quizCompleteHandler(student.id, cityId, mainId, historyId, isPassed, answerDetail);
 
-  console.log(save);
+  if (data.rewardGranted) {
+    alert(`Hadiah ${data.rewardType} didapatkan!`);
+  }
 }
 
 const addCandyToWallet = async (amount) => {
