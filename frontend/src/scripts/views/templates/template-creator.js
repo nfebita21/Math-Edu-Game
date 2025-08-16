@@ -99,11 +99,12 @@ const createEmptyCard = () => `
 `;
 
 const createGalleryCard = (spot) => `
-  <div class="gallery__card">
+  <div class="gallery__card" >
     <img class="badge-card" src="gallery-card.png">
     <div class="gallery__card-content">
       <img src="./secret-spots/${spot['picture_url']}" >
-      <p>${spot['spot_name']}</p>
+      <p class="spot-name">${spot['spot_name']}</p>
+      <p class="spot-type hidden">${spot['type']}</p>
     </div>
   </div>
 `;

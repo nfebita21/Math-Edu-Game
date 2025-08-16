@@ -11,8 +11,8 @@ const Gallery = {
           <img src="./title-decor/city4.png">
           <img src="./title-decor/city3.png">
         </div>
-        <p class="break--mobile">Galeri<br>Spot Rahasia</p>
-        <p class="break--desktop">Galeri Spot Rahasia</p>
+        <p class="break--mobile">Koleksi<br>Spot Rahasia</p>
+        <p class="break--desktop">Koleksi Spot Rahasia</p>
         <div class="title-decor cities-right">
           <img src="./title-decor/city.png">
           <img src="./title-decor/city4-backwards.png">
@@ -20,16 +20,58 @@ const Gallery = {
         </div>
       </div>
       <div class="container gallery-container"></div>
+      <div id="galleryModal" class="gallery-modal">
+        <span class="close-gallery-modal">&times;</span>
+        <div class="gallery-modal__content">
+          <img id="galleryModalImage" src="./secret-spots/kanal-serenity.jpg" alt="Preview">
+          <div id="galleryModalCaption" class="gallery-modal__caption">
+            <p class="spot-name">Kanal Serenity</p>
+            <p class="spot-type">Tipe: Basic</p>
+          </div>
+        </div>
+      </div>
     </div>
     `;
   },
 
   async afterRender() {
+    
     this._addButtonBackToLobby();
     await this._addContainerCardsForEachCity();
     this._addEmptyCards();
     await this._putGalleryStudentIntoCard();
+
+    const galleryCards = document.querySelectorAll('.gallery__card');
+
+    galleryCards.forEach(card => {
+      const imageUrl = card.querySelector('.gallery__card-content img').src;
+      const name = card.querySelector('.spot-name').textContent;
+      const type = card.querySelector('.spot-type').textContent
+      card.addEventListener('click', () => {
+        this.openModal(imageUrl, name, type);
+      });
+    });
+
     this.addCheckMarkForCompletedCards();
+  },
+
+  openModal(src, spotName, spotType) {
+    document.querySelector("#galleryModalImage").src = src;
+    document.querySelector("#galleryModalCaption .spot-name").innerText = spotName;
+    document.querySelector("#galleryModalCaption .spot-type").innerText = `Tipe: ${spotType}`;
+
+    const galleryModal = document.querySelector("#galleryModal")
+    galleryModal.style.display = "flex";
+
+    document.querySelector('.close-gallery-modal').addEventListener('click', () => {
+      galleryModal.style.display = "none";
+    });
+
+    galleryModal.addEventListener('click', (e) => {
+      if (e.target === galleryModal) {
+      galleryModal.style.display = "none";
+      }
+    })
   },
 
   _addButtonBackToLobby() {
@@ -79,7 +121,7 @@ const Gallery = {
 
       cardsWrapper[cityIndex].insertAdjacentHTML("afterbegin", createGalleryCard(spot));
 
-      if (spot.type === 'advanced') {
+      if (spot.type === 'Advanced') {
         let badgeCards = cardsWrapper[cityIndex].querySelectorAll('.badge-card');
         let badgeCard = badgeCards[0];
         badgeCard.src = 'red-badge.png';
