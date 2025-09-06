@@ -92,7 +92,6 @@ const Play = {
     sessionStorage.setItem('wrongAnswer', 0);
 
     if (findStudentQuizProgress.statusCode === 404) {
-      console.log('gada progress')
       await DBSource.addProgressQuiz(studentId, modul.id, level);
       document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialUnpassed());
       const popupOverlay = document.querySelector(".popup-overlay")
@@ -163,6 +162,7 @@ const Play = {
     sessionStorage.setItem('mainIndex', mainIndex);
     sessionStorage.setItem('quizIndex', quizIndex);
     sessionStorage.setItem('correctStepPerQuiz', 0);
+    sessionStorage.setItem('answerDetail', '[]')
     
 
     if (mainIndex === 1) {
@@ -224,16 +224,7 @@ const Play = {
     
     const stepNumber = currentStep.step;
 
-    // if (stepIndex === 0) {
-      quizWrapper.insertAdjacentHTML('beforeend', createSubQuiz(stepNumber, question) + answerTemplate.htmlElement);
-    // } else {
-    //   const stepLabel = document.querySelector('.sub-quiz h2')
-    //   const questionWrapper = document.querySelector('.sub-quiz p');
-    //   const resultContainer = document.querySelector('.result');
-    //   stepLabel.innerText = `Step ${stepNumber}`;
-    //   questionWrapper.innerText = question;
-    //   resultContainer.innerHTML = functionMap[templateName](mainId, currentStep).htmlElement;
-    // }
+    quizWrapper.insertAdjacentHTML('beforeend', createSubQuiz(stepNumber, question, mainId) + answerTemplate.htmlElement);
 
     const modul = (await DBSource.getModulById(currentStep.modul_id)).data[0];
 
