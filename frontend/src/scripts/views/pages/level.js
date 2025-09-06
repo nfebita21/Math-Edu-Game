@@ -68,7 +68,6 @@ const Level = {
     const cityName = url.cityName;
     const getCity = await DBSource.getCityByName(cityName);
     const city = getCity.data[0];
-    console.log(city.mission);
     missionContent.innerHTML = city.mission;
     
 
