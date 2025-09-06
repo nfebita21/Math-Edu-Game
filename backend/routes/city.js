@@ -4,16 +4,7 @@ import connection from "../db.js";
 const router = e.Router();
 
 
-router.get('/reward', async (req, res) => {
-  let { cityId, level } = req.query;
-  try {
-    const query = 'SELECT * FROM game_reward WHERE city_id = ? AND level = ?';
-    const result = await connection.query(query, [cityId, level]);
-    res.json({ data: result[0] });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+
 
 router.get('/progress/:cityId', async (req, res) => {
   const { cityId } = req.params;
@@ -95,7 +86,27 @@ router.get('/level', async (req, res) => {
   }
 });
 
+router.get('/reward', async (req, res) => {
+  let { cityId, level } = req.query;
+  try {
+    const query = 'SELECT * FROM game_reward WHERE city_id = ? AND level = ?';
+    const result = await connection.query(query, [cityId, level]);
+    res.json({ data: result[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
+router.get('/gallery/:cityId', async (req, res) => {
+  let { cityId } = req.params;
+  try {
+    const query = 'SELECT * FROM gallery WHERE city_id = ?';
+    const result = await connection.query(query, [cityId]);
+    res.json({ data: result[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.get('/:cityName', async (req, res) => {
   let { cityName } = req.params;
