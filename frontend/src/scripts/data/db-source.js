@@ -263,8 +263,8 @@ class DBSource {
     return responseJson;
   }
 
-  static async quizCompleteHandler(mainId, historyId, isPassed, detailAnswer) {
-    const response = await fetch(API_ENDPOINT.processQuizComplete(), {
+  static async quizCompleteHandler(studentId, cityId, mainId, historyId, isPassed, detailAnswer) {
+    const response = await fetch(API_ENDPOINT.processQuizComplete(studentId, cityId), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -275,7 +275,25 @@ class DBSource {
     const responseJson = await response.json();
     return responseJson;
   }
-  
+
+  static async gallery(cityId) {
+    const response = await fetch(API_ENDPOINT.getGalleryByCityId(cityId));
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async studentGalleryAddiction(studentId, galleryId) {
+    const response = await fetch(API_ENDPOINT.addStudentGallery(studentId, galleryId), {
+      method: 'POST', 
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ galleryId })
+    });
+
+    const responseJson = await response.json();
+    return responseJson;
+  }
 }
 
 

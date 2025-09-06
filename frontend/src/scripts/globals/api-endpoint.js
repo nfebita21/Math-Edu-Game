@@ -34,7 +34,9 @@ const API_ENDPOINT = {
   getLevelProgress: (cityId, studentId) => `${BASE_URL}/city/level-progress?cityId=${cityId}&studentId=${studentId}`,
   getLevel: (cityId, levelNum) => `${BASE_URL}/city/level?cityId=${cityId}&levelNumber=${levelNum}`,
   getQuiz: (modulId, level) => `${BASE_URL}/modul/quiz?modulId=${modulId}&level=${level}`,
-  processQuizComplete: () => `${BASE_URL}/students/process-quiz-complete`
+  processQuizComplete: (studentId, cityId) => `${BASE_URL}/students/process-quiz-complete?studentId=${studentId}&cityId=${cityId}`,
+  getGalleryByCityId: (cityId) => `${BASE_URL}/city/gallery/${cityId}`,
+  addStudentGallery: (studentId) => `${BASE_URL}/students/add-gallery/${studentId}`
 }
 
 export default API_ENDPOINT;
