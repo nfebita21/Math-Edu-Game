@@ -1,5 +1,4 @@
 import { createGlIllustrationOverlayA, createGlIllustrationOverlayB } from "../views/templates/template-creator";
-import mainQuiz from "./main-quiz";
 import actions from "./tutorial-actions";
 
 const tutorialData = {
@@ -138,7 +137,7 @@ const tutorialData = {
       7: [ // Step 1
         { action: (next) => actions.toggleOverlay(next) },
         { action: (next) => setTimeout(() => actions.focus(next, ['.gl-progress-bar']), 1000) },
-        { action: (next) => setTimeout(() => actions.showGuide(next, '.gl-progress-bar', 'Di level ini kamu akan mengumpulkan <b>jamur</b> yang memiliki berbagai tingkatan. Kumpulkan <b>spora</b> dengan menjawab pertanyaan dengan benar untuk meningkatkan level <b>jamur</b>! ', ['0', 'unset']), 1000) },
+        { action: (next) => setTimeout(() => actions.showGuide(next, '.gl-progress-bar', 'Di level ini kamu akan mengumpulkan <b>jamur</b>. Kumpulkan <b>spora</b> dengan menjawab pertanyaan dengan benar untuk meningkatkan level <b>jamur</b>! ', ['0', 'unset']), 1000) },
         { action: (next) => actions.showGuide(next, '.gl-progress-bar', 'Tanda melingkar sebagai tanda posisi step yang sedang dikerjakan.', ['unset', '0']) },
         { action: (next) => actions.focus(next, ['.main-quiz']) },
         { action: (next) => setTimeout(() => actions.showGuide(next, '.main-quiz', 'Soal kuis utama. Baca dan pahami sebelum mengerjakan!', ['0', 'unset']), 1000) },
