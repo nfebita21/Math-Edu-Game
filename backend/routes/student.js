@@ -1,8 +1,24 @@
 import express from 'express';
 import connection from '../db.js';
+import { isRewardGranted } from '../utils/random.js';
+import { getCurrentTime } from '../utils/time.js';
 
 const router = express.Router();
 
+
+router.post('/add-gallery/:studentId', async (req, res) => {
+  const { studentId } = req.params;
+  const { galleryId } = req.body;
+
+  try {
+    const query = "INSERT INTO student_gallery (student_id, gallery_id) VALUES (?, ?)";
+    const [result] = await connection.query(query, [studentId, galleryId]);
+
+    res.json({ result, message: 'Student gallery successfully added.' })
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.get('/search/:identityNumber', async (req, res) => {
   try {
@@ -31,13 +47,13 @@ router.get('/gallery/:studentId', async (req, res) => {
   try {
     const { studentId } = req.params;
     const query = 'SELECT g.spot_name, g.picture_url, g.city_id, g.type FROM student_gallery sg INNER JOIN gallery g on sg.gallery_id = g.id WHERE student_id = ?';
-    const result = await connection.query(query, [studentId]);
+    const [result] = await connection.query(query, [studentId]);
 
-    if(result[0].length === 0) {
-      return res.status(404).json({ statusCode: 404, message: 'The student do not have any picture'});
+    if(result.length === 0) {
+      return res.status(404).json({ statusCode: 404, message: 'The student do not have any picture', result });
     }
 
-    res.json({ statusCode: 200, result: result[0] });
+    res.json({ statusCode: 200, result });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -76,7 +92,7 @@ router.put('/:studentId/buy-city', async (req, res) => {
   const { studentId } = req.params;
   const { cityId } = req.body;
   try {
-    const query = 'UPDATE student_exp SET is_locked = 0 WHERE student_id = ? AND city_id = ?'
+    const query = 'UPDATE city_progress SET is_locked = 0 WHERE student_id = ? AND city_id = ?'
     const result = await connection.query(query, [studentId, cityId]);
 
     res.json({result: result[0], message: 'City unlocked', studentId, cityId});
@@ -113,20 +129,111 @@ router.get('/leaderboard', async (req, res) => {
 });
 
 router.post('/process-quiz-complete', async (req, res) => {
-  // const { studentId, cityId, level } = req.query;
+  const { studentId, cityId, level } = req.query;
   const { mainId, historyId, isPassed, detailAnswer } = req.body;
-  // const answerList = JSON.parse(detailAnswer);
 
-  // History Saving
   try {
+    // History Saving
     const query = "INSERT INTO quiz_history_detail (history_id, main_id, step_id, answer, is_correct) VALUES (?, ?, ?, ?, ?)";
 
-    await Promise.all(detailAnswer.map(answer => 
-      connection.query(query, 
-        [historyId, mainId, answer.stepId, answer.answer, answer.isCorrect])
+    // Student Reward Progress
+    let rewardGranted = false;
+    let rewardType = null;
+    let quizCounter = 0;
+    let attemptCounter = 0;
+
+    let [rewardProgress] = await connection.query(
+      "SELECT quiz_passed_count, attempt_counter, last_reward_at FROM student_rewards_progress WHERE student_id = ? AND city_id = ?",
+      [studentId, cityId]
+    );
+
+    if (!rewardProgress.length) {
+      await connection.query(
+        "INSERT INTO student_rewards_progress (student_id, city_id, quiz_passed_count, last_reward_at, attempt_counter) VALUES (?, ?, ?, ?, ?)",
+        [studentId, cityId, 0, null, 0]
+      );
+      rewardProgress = [{ quiz_passed_count: 0, attempt_counter: 0, last_reward_at: null }];
+    }
+
+    // Sesuaikan dengan database
+    quizCounter = rewardProgress[0].quiz_passed_count;
+    attemptCounter = rewardProgress[0].attempt_counter;
+    let lastRewardAt = rewardProgress[0].last_reward_at;
+
+    const [oldCriteria] = await connection.query(
+        `SELECT * FROM reward_criteria 
+        WHERE min_quiz_count <= ?
+        ORDER BY min_quiz_count DESC
+        LIMIT 1`,
+        [quizCounter]
+      );
+
+      rewardType = oldCriteria.length >= 1 ? oldCriteria[0].reward_type : null;
+
+    if (isPassed) {
+
+      quizCounter++;
+
+      const [criteria] = await connection.query(
+        `SELECT * FROM reward_criteria 
+        WHERE min_quiz_count <= ?
+        ORDER BY min_quiz_count DESC
+        LIMIT 1`,
+        [quizCounter]
+      );
+
+      if (criteria.length > 0) {
+        const newRewardType = criteria[0].reward_type;
+
+        // Reset attemptCounter kalau type berubah
+        if (rewardType !== newRewardType) {
+          attemptCounter = 0;
+        }
+
+        rewardType = newRewardType;
+        attemptCounter++;
+
+        if (attemptCounter <= criteria[0].max_attempts) {
+
+          if (isRewardGranted(criteria[0].chance_denom)) {
+            // ✅ Reward didapatkan
+            rewardGranted = true;
+            attemptCounter = 0;
+
+            if (rewardType === "Advanced") {
+              quizCounter = 0;
+            }
+
+            lastRewardAt = new Date();
+          }
+        } else { // Kalau udah melebihi max attempts
+          rewardType = null;
+          quizCounter = 0;
+          attemptCounter = 0;
+        }
+      } // penutup jika kriteria ada
+    } // penutup kuis yg lulus nilai
+
+    // 🔄 Simpan progress
+    await connection.query(
+      "UPDATE student_rewards_progress SET quiz_passed_count = ?, attempt_counter = ?, last_reward_at = ? WHERE student_id = ? AND city_id = ?",
+      [quizCounter, attemptCounter, lastRewardAt, studentId, cityId]
+    );
+
+    // Simpan jawaban detail
+    await Promise.all(detailAnswer.map(answer =>
+      connection.query(query, [
+        historyId, mainId, answer.stepId, answer.answer, answer.isCorrect
+      ])
     ));
 
-    res.json({ message: 'Quiz answer successfully saved' });
+    res.json({
+      message: "Quiz answer successfully saved",
+      rewardGranted,
+      rewardType,
+      quizCounter,
+      attemptCounter
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
