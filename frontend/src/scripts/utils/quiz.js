@@ -1,18 +1,74 @@
+import showRewardCard from "../animations/reward-card";
 import DBSource from "../data/db-source";
+import generateCard from "./generate-card";
 
 const renderFractionText = (text) => {
-  return text.replace(/\[FRAC:(\d+)\/(\d+)\]/g, (_, numerator, denominator) => {
-    return `
-      <span class="fraction-wrapper">
-        <span id="fraction">
-          <span class="numerator">${numerator}</span>
-          <span class="denominator">${denominator}</span>
+  return text.replace(/\[FRAC:(?:(\d+)-)?(\d+)\/(\d+)\]/g, (_, integer, numerator, denominator) => {
+    if (integer) {
+      // Pecahan campuran
+      return `
+        <span class="fraction-wrapper mixed">
+          <span class="integer">${integer}</span>
+          <span id="fraction">
+            <span class="numerator">${numerator}</span>
+            <span class="denominator">${denominator}</span>
+          </span>
         </span>
-      </span>
-    `;
+      `;
+    } else {
+      // Pecahan biasa
+      return `
+        <span class="fraction-wrapper">
+        <span class="integer"></span>
+          <span id="fraction">
+            <span class="numerator">${numerator}</span>
+            <span class="denominator">${denominator}</span>
+          </span>
+        </span>
+      `;
+    }
   });
+};
+
+const extractDecimal = (str) => {
+  let matches = str.match(/\d+[.,]\d+/g) || [];
+  return matches;
 }
 
+
+const parseFraction = (str) => {
+  console.log(str)
+  const fractionStr = extractFraction(str);
+  
+  let match = fractionStr.match(/\[FRAC:(.*?)\]/);
+  if (!match) return null;
+
+  let fracPart = match[1]; 
+  
+  let integer = null;
+  let numerator = null;
+  let denominator = null;
+
+  if (fracPart.includes("-")) {
+    let [intPart, frac] = fracPart.split("-");
+    integer = parseInt(intPart, 10);
+
+    let [num, den] = frac.split("/");
+    numerator = parseInt(num, 10);
+    denominator = parseInt(den, 10);
+  } else {
+    let [num, den] = fracPart.split("/");
+    numerator = parseInt(num, 10);
+    denominator = parseInt(den, 10);
+  }
+
+  return { integer, numerator, denominator };
+}
+
+const extractFraction = (str) => {
+  let match = str.match(/\[.*?\]/);
+  return match[0];
+}
 
 const startQuiz = async () => {
   const studentData = JSON.parse(localStorage.getItem('user'));
@@ -116,7 +172,12 @@ const saveAnswerDetail = async (cityId, mainId, correctStepPerQuiz) => {
   const data = await DBSource.quizCompleteHandler(student.id, cityId, mainId, historyId, isPassed, answerDetail);
 
   if (data.rewardGranted) {
-    alert(`Hadiah ${data.rewardType} didapatkan!`);
+    const reward = await generateCard(data.rewardType);
+
+    if (reward) {
+      await DBSource.studentGalleryAddiction(student.id, reward.id);
+      await showRewardCard(reward);
+    }
   }
 }
 
@@ -126,5 +187,18 @@ const addCandyToWallet = async (amount) => {
   await DBSource.candyIncrease(studentId, amount);
 }
 
+function isPowerOfTen(n) {
+  if (n < 10) return false; // minimal 10
+  let log10 = Math.log10(n);
+  return Number.isInteger(log10);
+}
 
-export { renderFractionText, startQuiz, scoringHandler, getLetterGrade, calculateOverallValue, getValueColor, getvalueLabel, hasPassedOverall, saveQuiz, addQuizDetail, saveAnswerDetail };
+const getMainIndex = (mainId) => {
+  const mainQuizArr = (JSON.parse(sessionStorage.getItem('detailQuiz'))).main;
+  const currentMain = mainQuizArr.find(main => main.id === mainId);
+  const mainIndex = currentMain.main_index;
+
+  return mainIndex;
+}
+
+export { renderFractionText, parseFraction , startQuiz, scoringHandler, getLetterGrade, calculateOverallValue, getValueColor, getvalueLabel, hasPassedOverall, saveQuiz, addQuizDetail, saveAnswerDetail, extractDecimal, isPowerOfTen, getMainIndex };

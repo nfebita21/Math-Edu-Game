@@ -1,6 +1,6 @@
-import { fractionAbilityToSimplifyChecking, fractionResultChecking, fractionSetQuestionChecking, illustrationChoicesChecking, simplestFractionChecking } from "../utils/answerChecker";
-import { calcHandler, fractionToggler, multiChoicesHandler, numberInputValidation, openImageDetail, submitStepHandler } from "../utils/play-handler";
-import { createResultGameGL, fractionAbilityToSimplify, glProgressBar, illustrationChoices, fractionSetQuestion, simplestFractionAnswer, fractionResult, multiplicationFractionForm } from "../views/templates/template-creator";
+import { fractionAbilityToSimplifyChecking, fractionResultChecking, fractionSetQuestionChecking, fractionToDecimalChecking, illustrationChoicesChecking, mixedFractionChecking, multiFractionChecking, simplestFractionChecking } from "../utils/answerChecker";
+import { calcHandler, fractionDecomposition, fractionToggler, multiChoicesHandler, numberInputValidation, openImageDetail,submitStepHandler } from "../utils/play-handler";
+import { createResultGameGL, fractionAbilityToSimplify, glProgressBar, illustrationChoices, fractionSetQuestion, simplestFractionAnswer, fractionResult, multiplicationFractionForm, mixedFractionConvertion, fractionToMixedConvertion, decimalToFractionConvertion, fractionToDecimalConvertion } from "../views/templates/template-creator";
 
 const functionMap = {
   fractionSetQuestion,
@@ -21,7 +21,15 @@ const functionMap = {
   illustrationChoicesChecking,
   simplestFractionChecking,
   createResultGameGL,
-  multiplicationFractionForm
+  multiplicationFractionForm,
+  mixedFractionConvertion, 
+  fractionToMixedConvertion,
+  mixedFractionChecking,
+  decimalToFractionConvertion,
+  multiFractionChecking,
+  fractionToDecimalConvertion,
+  fractionDecomposition,
+  fractionToDecimalChecking
 }
 
 export default functionMap;

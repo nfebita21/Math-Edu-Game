@@ -6,7 +6,7 @@ import quizOption from "../globals/quiz-option";
 import subQuiz from "../globals/sub-quiz";
 import UrlParser from "../routes/url-parser";
 import Play from "../views/pages/play";
-import { createPopupAfterTutorialPassed, createResultGameGL } from "../views/templates/template-creator";
+import { createDecimalInput, createFractionInput, createPopupAfterTutorialPassed, createResultGameGL, optionalFractionalResult } from "../views/templates/template-creator";
 import { calculateOverallValue, hasPassedOverall, saveAnswerDetail, saveQuiz, scoringHandler, startQuiz } from "./quiz";
 import TutorialHandler from "./tutorial-handler";
 
@@ -76,6 +76,8 @@ const areAllInputsFilledIn = () => {
       filledInput++;
     }
   });
+
+  console.log(numberOfInputs, filledInput)
 
   if (numberOfInputs === filledInput) {
     btnSubmitResult.classList.add('active');
@@ -198,7 +200,7 @@ const submitStepHandler = async (mainId, stepQuiz, stepId) => {
         const isThisWithTutorial = Number(sessionStorage.getItem('isThisWithTutorial'));
 
         if (quizIndex === 5) {
-          await saveAnswerDetail(mainId, correctStepPerQuiz);
+          await saveAnswerDetail(cityId, mainId, correctStepPerQuiz);
           processQuizResult();
         } else if (isThisWithTutorial && quizIndex === 1) {
           const quizProgressId = sessionStorage.getItem('quizProgressId');
@@ -223,8 +225,8 @@ const submitStepHandler = async (mainId, stepQuiz, stepId) => {
             return;
           });
         } else if (quizIndex >= 0 && quizIndex < 5){
-          await saveAnswerDetail(mainId, correctStepPerQuiz);
           await showCharFeedback(correctStepPerQuiz);
+          await saveAnswerDetail(cityId, mainId, correctStepPerQuiz);
         
           Play.displayQuiz(detailQuiz, mainIndex, quizIndex);        
         }   
@@ -254,7 +256,6 @@ const progressBarHandler = async (stepNumber, isQuizPassed, mainId, stepId, isGr
 
   if (isGroupedStep) {
     const correctAnswer = options.find(opt => opt.main_quiz_id === mainId && opt.sub_quiz_id === stepId && opt.is_correct);
-    // const correctAnswer = choicesAnswer.choices.find(opt => opt.isCorrect === true);
 
     if (correctAnswer.answer === 'Ya') {
       return;
@@ -350,10 +351,7 @@ const processQuizResult = async () => {
         });
       }
     } 
-    // milestoneIndex++;
-  // }
   
-  console.log(dataResult.harvest)
   dataResult.harvest.sort((a, b) => a.level - b.level);
 
   dataResult.scores.score = score;
@@ -576,7 +574,90 @@ const showProgressBar = async () => {
       bullet.classList.add('show');
     })
   }, totalDelay);
-  
 }
 
-export { numberInputValidation, insertTextAtCursor, areAllInputsFilledIn, deleteNumberInput, toggleFractionMode, calcHandler, fractionToggler, submitStepHandler, multiChoicesHandler, openImageDetail, showPointer, showProgressBar };
+const fractionDecomposition = () => {
+  const fractionQuestionEl = document.querySelector('.fraction-question');
+
+  fractionQuestionEl.addEventListener('click', (e) => {
+    if (e.target && e.target.classList.contains('btn-add-result')) {
+      e.target.remove();
+      let optionalFracResult = document.querySelector('.optional-frac-result:last-child');
+
+      if (optionalFracResult) {
+        optionalFracResult.classList.remove('removable');
+      }
+
+      fractionQuestionEl.insertAdjacentHTML('beforeend', `<span class="equivalent">=</span> ${optionalFractionalResult()}`);
+
+      const optionalFracResults = document.querySelectorAll('.optional-frac-result');
+      if (optionalFracResults.length <= 1) {
+        fractionQuestionEl.insertAdjacentHTML('beforeend', '<button class="btn-add-result" id="btnAddResult">+</button>');
+      }
+
+      areAllInputsFilledIn();
+    }
+
+    else if (e.target.classList.contains('remove-btn')) {
+      document.querySelector('.optional-frac-result.removable').remove();
+
+      document.querySelector('.equivalent:last-of-type').remove();
+
+      const btnAddResult = document.querySelector('#btnAddResult');
+      if (!btnAddResult) {
+        fractionQuestionEl.insertAdjacentHTML(
+          'beforeend',
+          `<button class="btn-add-result" id="btnAddResult">+</button>`
+        );
+      }
+
+      const lastFrac = document.querySelector('.optional-frac-result:last-of-type');
+      if (lastFrac) {
+        lastFrac.classList.add('removable');
+      }
+
+      areAllInputsFilledIn();
+    }
+
+    if (e.target.closest('.switch-input-mode')) {
+      const parent = e.target.closest('.decimal-kit, .fraction-container');
+      if (parent.classList.contains('decimal-kit')) {
+        parent.insertAdjacentHTML('afterend', createFractionInput());
+      } else {
+        parent.insertAdjacentHTML('afterend', createDecimalInput());
+      }
+      parent.remove();
+
+      areAllInputsFilledIn();
+    }
+
+    if (e.target.closest('.retreat-btn') || e.target.closest('.advance-btn')) {
+      const btn = e.target.closest('.retreat-btn, .advance-btn');
+      if (!btn) return;
+
+      const kit = btn.closest('.decimal-kit');
+      const input = kit.querySelector('.decimal');
+      let val = input.value.trim();
+
+      if (!val) return; // kosong, ga ngapa-ngapain
+
+      // ubah koma jadi titik biar bisa di-parse
+      let num = parseFloat(val.replace(',', '.'));
+      if (isNaN(num)) return;
+
+      if (btn.classList.contains('retreat-btn')) {
+        num = num / 10; // mundur koma
+      } else if (btn.classList.contains('advance-btn')) {
+        // maju koma → kali 10
+        if (Number.isInteger(num)) return; // kalau sudah bulat, stop
+        num = num * 10;
+      }
+
+      num = parseFloat(num.toFixed(10));
+      // ubah titik jadi koma lagi untuk ditampilkan
+      input.value = num.toString().replace('.', ',');
+    }
+  });
+}
+
+export { numberInputValidation, insertTextAtCursor, areAllInputsFilledIn, deleteNumberInput, toggleFractionMode, calcHandler, fractionToggler, submitStepHandler, multiChoicesHandler, openImageDetail, showPointer, showProgressBar, fractionDecomposition };

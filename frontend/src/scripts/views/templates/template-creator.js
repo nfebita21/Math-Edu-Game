@@ -3,7 +3,7 @@ import Avatars from "../../globals/avatars";
 import mainQuiz from "../../globals/main-quiz";
 import quizOption from "../../globals/quiz-option";
 import { array } from "../../utils/common";
-import { getvalueLabel, renderFractionText } from "../../utils/quiz";
+import { extractDecimal, getMainIndex, getvalueLabel, isPowerOfTen, parseFraction, renderFractionText } from "../../utils/quiz";
 // import { fractionMultiplicationHandler } from "../../utils/play-handler";
 
 const createCitySliderTemplate = (city, studentExp, rank) => `
@@ -109,6 +109,27 @@ const createGalleryCard = (spot) => `
   </div>
 `;
 
+const createSurpriseReward = (reward) => {
+  let type = reward.type;
+  type = type === 'Basic' ? 'Normal' : 'Langka';
+  return `
+  <div class="reward-overlay hidden">
+    <div class="reward-container">
+      <h2 class="reward-title">Kamu menemukan spot rahasia!</h2>
+      <p class="reward-type">Tipe: ${type}</p>
+      <div class="gallery__card" >
+        <img class="badge-card" src="gallery-card.png">
+        <div class="gallery__card-content">
+          <img src="./secret-spots/${reward['picture_url']}" >
+          <p class="reward-name spot-name">${reward['spot_name']}</p>
+          <p class="spot-type hidden">${reward['type']}</p>
+        </div>
+      </div>
+      <button class="reward-close">Lanjutkan</button>
+    </div>
+  </div>
+`};
+
 const createRankingRow = (numRank, player) => `
   <li class="row">
     <div class="data-wrapper">
@@ -211,12 +232,18 @@ const createMainQuiz = (question) => {
     </div>  `;
 }
 
-const createSubQuiz = (step, question) => `
-  <div class="sub-quiz">
-    <h2>Step ${step}</h2>
-    <p>${question}</p>
-  </div>
-`;
+const createSubQuiz = (step, question, mainId) => {
+  if (question.includes('|')) {
+    const mainIndex = getMainIndex(mainId);
+    question = renderFractionText(question.split('|')[mainIndex]);
+  }
+  return `
+    <div class="sub-quiz">
+      <h2>Step ${step}</h2>
+      <p>${question}</p>
+    </div>
+  `
+};
 
 const createResultQuiz = (templateResult) => {
   // templateResult.setup();
@@ -1015,6 +1042,231 @@ const multiplicationFractionForm = (mainId, currentStep, operator) => {
   }
 }
 
+const mixedFractionConvertion = (mainId) => {
+  const subQuiz = (JSON.parse(sessionStorage.getItem('detailQuiz'))).sub;
+  const stepIndex = sessionStorage.getItem('stepIndex');
+  const subArr = subQuiz[stepIndex].question.split('|');
+
+  const mainIndex = getMainIndex(mainId);
+  let question = subArr[mainIndex];
+  const { integer, numerator, denominator } = parseFraction(question);
+  return {
+    htmlElement: `
+    <div class="calc-result no-calc">
+      <div class="calc-input">
+        <div class="fraction-question">
+          <span class="fraction-wrapper mixed">
+            <span class="integer">${integer}</span>
+            <span id="fraction">
+              <span class="numerator">${numerator}</span>
+              <span class="denominator">${denominator}</span>
+            </span>
+          </span>
+          =
+          <div class="fraction-container">
+            <div class="first-fraction__numerator">
+              <input class="first-fraction initial-focus number-input show first-fraction__numerator" id="numerator" max-length="2" autocomplete="off">
+            </div>
+            <div class="fraction-line"></div>
+            <div class="first-fraction__denominator">
+              <input class="first-fraction number-input show first-fraction__denominator" id="denominator" autocomplete="off">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-submit-result__container">
+        <button class="btn-submit-result btn-next-step" id="btnSubmitResult">Lanjut</button>
+      </div>
+    </div>
+  `
+  }
+}
+
+const fractionToMixedConvertion = (mainId) => {
+  const subQuiz = (JSON.parse(sessionStorage.getItem('detailQuiz'))).sub;
+  const stepIndex = sessionStorage.getItem('stepIndex');
+  const subArr = subQuiz[stepIndex].question.split('|');
+
+  const mainIndex = getMainIndex(mainId);
+  let question = subArr[mainIndex];
+  const { numerator, denominator } = parseFraction(question);
+  return {
+    htmlElement: `
+    <div class="calc-result no-calc">
+      <div class="calc-input">
+        <div class="fraction-question">
+          <span class="fraction-wrapper">
+            <span id="fraction">
+              <span class="numerator">${numerator}</span>
+              <span class="denominator">${denominator}</span>
+            </span>
+          </span>
+          =
+          <input id="integer" class="integer" autocomplete="off">
+          <div class="fraction-container mixed">
+            
+            <div class="first-fraction__numerator">
+              <input class="first-fraction initial-focus number-input show first-fraction__numerator" id="numerator" max-length="2" autocomplete="off">
+            </div>
+            <div class="fraction-line"></div>
+            <div class="first-fraction__denominator">
+              <input class="first-fraction number-input show first-fraction__denominator" id="denominator" autocomplete="off">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-submit-result__container">
+        <button class="btn-submit-result btn-next-step" id="btnSubmitResult">Lanjut</button>
+      </div>
+    </div>
+    `
+  }
+
+  
+}
+
+const decimalToFractionConvertion = (mainId) => {
+  const subQuiz = (JSON.parse(sessionStorage.getItem('detailQuiz'))).sub;
+  const stepIndex = sessionStorage.getItem('stepIndex');
+  const subArr = subQuiz[stepIndex].question.split('|');
+
+  const mainIndex = getMainIndex(mainId);
+  let question = subArr[mainIndex];
+  const decimal = extractDecimal(question);
+
+  return {
+    htmlElement: `
+    <div class="calc-result no-calc">
+      <div class="calc-input">
+        <div class="fraction-question">
+          <p class="decimal">${decimal}</p>
+          =
+          <div class="fraction-container">
+            <div class="first-fraction__numerator">
+              <input class="first-fraction initial-focus number-input show first-fraction__numerator" max-length="2" autocomplete="off">
+            </div>
+            <div class="fraction-line"></div>
+            <div class="first-fraction__denominator">
+              <input class="first-fraction number-input show first-fraction__denominator"  autocomplete="off">
+            </div>
+          </div>
+          <button class="btn-add-result" id="btnAddResult">+</button>
+        </div>
+      </div>
+      <div class="btn-submit-result__container">
+        <button class="btn-submit-result btn-next-step" id="btnSubmitResult">Lanjut</button>
+      </div>
+    </div>
+  `
+  }
+}
+
+const fractionToDecimalConvertion = (mainId) => {
+  const subQuiz = (JSON.parse(sessionStorage.getItem('detailQuiz'))).sub;
+  const stepIndex = sessionStorage.getItem('stepIndex');
+  const subArr = subQuiz[stepIndex].question.split('|');
+
+  const mainIndex = getMainIndex(mainId);
+  let question = subArr[mainIndex];
+  const { numerator, denominator } = parseFraction(question);
+  const resultString = isPowerOfTen(denominator) ? `<div class="decimal-kit">
+      <button class="switch-input-mode"><i class="fa-solid fa-repeat"></i></button>
+      <input class="decimal number-input show" id="decimal" autocomplete="off">
+      <div class="decimal-helper">
+        <button class="retreat-btn">
+          <img src="green-left-arrow.png">
+        </button>
+        <button class="advance-btn">
+          <img src="green-right-arrow.png">
+        </button>
+      </div>
+    </div>` : `
+    <div class="fraction-container multiplication">
+      <div class="first-fraction__numerator">
+        <span>${numerator}</span>
+        x
+        <input class="first-fraction initial-focus number-input show first-fraction__numerator" id="numerator" max-length="2" autocomplete="off">
+      </div>
+      <div class="fraction-line"></div>
+      <div class="first-fraction__denominator">
+        <span>${denominator}</span>
+        x
+        <input class="first-fraction number-input show first-fraction__denominator" id="denominator" autocomplete="off">
+      </div>
+    </div> 
+  `;
+
+  return {
+    htmlElement: `
+    <div class="calc-result no-calc">
+      <div class="calc-input">
+        <div class="fraction-question">
+          <span class="fraction-wrapper">
+            <span id="fraction">
+              <span class="numerator">${numerator}</span>
+              <span class="denominator">${denominator}</span>
+            </span>
+          </span>
+          =
+          ${resultString}
+          <button class="btn-add-result" id="btnAddResult">+</button>
+        </div>
+      </div>
+      <div class="btn-submit-result__container">
+        <button class="btn-submit-result btn-next-step" id="btnSubmitResult">Lanjut</button>
+      </div>
+    </div>
+    `
+  }
+}
+
+const optionalFractionalResult = () => `
+  <div class="optional-frac-result removable">
+   <button class="remove-btn">x</button>
+    <div class="decimal-kit">
+      <button class="switch-input-mode"><i class="fa-solid fa-repeat"></i></button>
+      <input class="decimal number-input show" autocomplete="off">
+      <div class="decimal-helper">
+        <button class="retreat-btn">
+          <img src="green-left-arrow.png">
+        </button>
+        <button class="advance-btn">
+          <img src="green-right-arrow.png">
+        </button>
+      </div>
+    </div>
+  </div>
+`;
+
+const createFractionInput = () => `
+  <div class="fraction-container">
+    <button class="switch-input-mode"><i class="fa-solid fa-repeat"></i></button>
+    <div class="first-fraction__numerator">
+      <input class="first-fraction initial-focus number-input show first-fraction__numerator" id="numerator" max-length="2" autocomplete="off">
+    </div>
+    <div class="fraction-line"></div>
+    <div class="first-fraction__denominator">
+      <input class="first-fraction number-input show first-fraction__denominator" id="denominator" autocomplete="off">
+    </div>
+  </div>
+`;
+
+const createDecimalInput = () => `
+  <div class="decimal-kit">
+    <button class="switch-input-mode"><i class="fa-solid fa-repeat"></i></button>
+    <input class="decimal number-input show" id="decimal" autocomplete="off">
+    <div class="decimal-helper">
+      <button class="retreat-btn">
+        <img src="green-left-arrow.png">
+      </button>
+      <button class="advance-btn">
+        <img src="green-right-arrow.png">
+      </button>
+    </div>
+  </div>
+`;
+
+
 export { createCitySliderTemplate, createGreetingBubble, createButtonBackToLobby, createCategoryCardsContainer, createEmptyCard, createGalleryCard, createRankingRow, createPurchaseConfirmationModal, createSettingsModal, createButtonLevel, createMainQuiz, createSubQuiz, fractionSetQuestion, createResultQuiz, fractionResult, fractionAbilityToSimplify, 
   simplestFractionAnswer,illustrationChoices, createFingerPointer, createPrecisWrapper, createPrecisTutorial,
   createPointerText, createMultiplicationLineTop, createRightArrow, createClueWrapper, createClue, createInstruction, createGuide, glProgressBar, createBtnNextTutorial, createIllustrationContainer, 
@@ -1022,6 +1274,8 @@ export { createCitySliderTemplate, createGreetingBubble, createButtonBackToLobby
   createDialogTutorialTop,
   createDialogTutorialBottom,
   createPopupTutorialPassed,
-  createPopupTutorialUnpassed, createPopupAfterTutorialPassed, createResultGameGL, createFinalStamp, createNextLevelButton, createTryAgainButton, multiplicationFractionForm, createArrowToTop, createArrowToBottom
+  createPopupTutorialUnpassed, createPopupAfterTutorialPassed, createResultGameGL, createFinalStamp, createNextLevelButton, createTryAgainButton, multiplicationFractionForm, createArrowToTop, createArrowToBottom, createSurpriseReward, mixedFractionConvertion, fractionToMixedConvertion, decimalToFractionConvertion,
+  fractionToDecimalConvertion,
+  optionalFractionalResult, createFractionInput, createDecimalInput
  };
 
