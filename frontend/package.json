@@ -31,6 +31,7 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
     "regenerator-runtime": "^0.14.1"
   }
 }
