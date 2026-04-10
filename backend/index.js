@@ -15,6 +15,7 @@ const PORT = 3000;
 const whiteList = [
   'http://localhost:9000',
   'http://192.168.1.2:9000',
+  'https://math-edu-game.vercel.app'
 ]
 
 const corsOptions = {
