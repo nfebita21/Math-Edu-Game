@@ -5,6 +5,7 @@ import AuthService from "../utils/auth-service";
 import DrawerInitiator from "../utils/drawer-initiator";
 import HeaderController from "../utils/header-controller";
 import { createSettingsModal } from "./templates/template-creator";
+import MusicManager from "../utils/music-manager.js";
 
 class App {
   constructor({ button, drawer, content, body, header, menuItem }) {
@@ -38,6 +39,7 @@ class App {
 
       AuthService.logout();
       window.location.href = '#/login';
+      // MusicManager.stop();
     })
   };
 
@@ -144,6 +146,19 @@ class App {
     }
   }
 
+  _initModalSound(modal) {
+    const clickSound = document.getElementById("clickSound");
+    modal.addEventListener("click", (e) => {
+      const el = e.target.closest("button, .button");
+      if (!el) return;
+
+      if (el.classList.contains("no-click-sound")) return;
+
+      clickSound.currentTime = 0;
+      clickSound.play();
+    });
+  }
+
   _settingsModalOperation() {
     const modalContainer = document.querySelector('.modal__settings');
     const btnOpenModal = document.querySelector('#btnEdit');
@@ -164,6 +179,7 @@ class App {
 
     btnOpenModal.addEventListener('click', () => {
       modalContainer.style.display = 'block';
+      this._initModalSound(modalContainer)
 
       const student = JSON.parse(localStorage.getItem('user'));
       currentPlayerName = student['nick_name'];
@@ -267,22 +283,59 @@ class App {
     localStorage.setItem('user', JSON.stringify(student.data));
   }
 
+  
+  _setActiveMenu() {
+    const buttons = document.querySelectorAll(".app-bar__navigation ul li");
+    const currentUrl = UrlParser.parseActiveUrlWithCombiner();
+
+    buttons.forEach(btn => {
+      const link = btn.querySelector('a');
+      if (link.getAttribute("href") === `#${currentUrl}`) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  }
+
+  _nonActiveMenu() {
+    const buttons = document.querySelectorAll(".app-bar__navigation ul li");
+
+    buttons.forEach(btn => {
+      btn.classList.remove("active");
+    });
+  }
+
   async renderPage() {
     let page;
     const url = UrlParser.parseActiveUrlWithCombiner();
     const isLoggedIn = await AuthService.isLoggedIn();
+    const audio = document.getElementById("bg-music");
+
     if (isLoggedIn) {
       if (url === '/login' || url === '/sign-up' || url === '/' || url === '/lobby') {
+        this._nonActiveMenu();
         window.location.href = '#/lobby?id=1';
         window.location.reload();
+        
+        
       } else {
         page = routes[url];
+
+        if (url === '/collection' || url === '/leaderboard') {
+          this._setActiveMenu();
+        } else {
+          this._nonActiveMenu();
+        }
       }
       const identityNumber = JSON.parse(localStorage.getItem('user'))['identity_number'];
       await this._updateStudentOnReload(identityNumber);
       await HeaderController.showHeader(this._header);
 
     } else {
+      audio.pause();        // ⛔ stop
+      audio.currentTime = 0;
+
       HeaderController.hideHeader(this._header);
       AuthService.logout();
       if (url === '/login' || url === '/sign-up') {
@@ -296,7 +349,13 @@ class App {
     this._content.innerHTML = await page.render();
     await page.afterRender();
 
+    
+
     if (isLoggedIn) {
+      audio.play().catch(() => {});
+      audio.setAttribute("autoplay", "true");
+      audio.volume = 0.5;
+
       const student = JSON.parse(localStorage.getItem('user'));
       const nickName = student['nick_name'];
       const avatarUrl = student['avatar_url'];
@@ -304,6 +363,7 @@ class App {
       this._content.insertAdjacentHTML('beforeend', createSettingsModal(nickName, gender, avatarUrl));
       this._settingsModalOperation();
     }
+
 
   };
 };

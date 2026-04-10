@@ -36,7 +36,9 @@ const API_ENDPOINT = {
   getQuiz: (modulId, level) => `${BASE_URL}/modul/quiz?modulId=${modulId}&level=${level}`,
   processQuizComplete: (studentId, cityId) => `${BASE_URL}/students/process-quiz-complete?studentId=${studentId}&cityId=${cityId}`,
   getGalleryByCityId: (cityId) => `${BASE_URL}/city/gallery/${cityId}`,
-  addStudentGallery: (studentId) => `${BASE_URL}/students/add-gallery/${studentId}`
+  addStudentGallery: (studentId) => `${BASE_URL}/students/add-gallery/${studentId}`,
+  quizReview: (historyId) => `${BASE_URL}/students/quiz-review/${historyId}`,
+  colorTheme: (cityId) => `${BASE_URL}/city/color-theme/${cityId}`
 }
 
 export default API_ENDPOINT;

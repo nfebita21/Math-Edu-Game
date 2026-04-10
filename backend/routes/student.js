@@ -59,12 +59,23 @@ router.get('/gallery/:studentId', async (req, res) => {
   }
 });
 
+router.get('/quiz-review/:historyId', async (req, res) => {
+  try { 
+    const { historyId } = req.params;
 
+    const query = 'SELECT * FROM quiz_history_detail WHERE history_id = ?';
+    let [result] = await connection.query(query, [historyId]);
+
+    res.json({result});
+
+  } catch (err) {
+    res.status(200).json({ error: err.message });
+  }
+});
 
 router.get('/:studentId/total-score', async (req, res) => {
   try {
     const { studentId } = req.params;
-    console.log('ini rute quiz progress')
 
     const query = 'SELECT SUM(score) AS total_score FROM quiz_history WHERE student_id = ?';
     let result = await connection.query(query, [studentId]);
@@ -134,7 +145,7 @@ router.post('/process-quiz-complete', async (req, res) => {
 
   try {
     // History Saving
-    const query = "INSERT INTO quiz_history_detail (history_id, main_id, step_id, answer, is_correct) VALUES (?, ?, ?, ?, ?)";
+    const query = "INSERT INTO quiz_history_detail (history_id, main_id, step_id, answer, is_correct, correction) VALUES (?, ?, ?, ?, ?, ?)";
 
     // Student Reward Progress
     let rewardGranted = false;
@@ -221,11 +232,17 @@ router.post('/process-quiz-complete', async (req, res) => {
     );
 
     // Simpan jawaban detail
-    await Promise.all(detailAnswer.map(answer =>
-      connection.query(query, [
-        historyId, mainId, answer.stepId, answer.answer, answer.isCorrect
-      ])
-    ));
+
+    for (const answer of detailAnswer) {
+      await connection.query(query, [
+        historyId,
+        mainId,
+        answer.stepId,
+        answer.answer,
+        answer.isCorrect,
+        answer.correctAnswer
+      ]);
+    }
 
     res.json({
       message: "Quiz answer successfully saved",

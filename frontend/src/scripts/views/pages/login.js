@@ -1,5 +1,6 @@
 // import AuthService from "../../utils/auth-service";
 import DBSource from "../../data/db-source";
+import MusicManager from "../../utils/music-manager.js";
 
 const Login = {
   async render() {
@@ -54,6 +55,7 @@ const Login = {
           localStorage.setItem('token', result.token);
           localStorage.setItem('user', JSON.stringify(result.user));
           window.location.href = '#/lobby?id=1';
+          // MusicManager.play();
         }
       }
     });

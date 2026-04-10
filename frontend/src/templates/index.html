@@ -14,9 +14,31 @@
   <title>MathCity Adventures</title>
 </head>
 <body>
+  <audio id="bg-music" loop>
+    <source src="music/bg-music.mp3">
+  </audio>
+  <audio id="clickSound" src="music/click.mp3" preload="auto"></audio>
+  <audio id="dropdownProfile" src="music/dropdown-profile.mp3" preload="auto"></audio>
+  <audio id="missionSfx" src="music/mission.mp3" preload="auto"></audio>
+  <audio id="progressBarItemSfx" src="music/item-collect.mp3" preload="auto"></audio>
+  <audio id="correctAnswerSfx" src="music/correct-answer.mp3" preload="auto"></audio>
+  <audio id="wrongAnswerSfx" src="music/wrong-answer.mp3" preload="auto"></audio>
+  <audio id="feedbackSfx" src="music/feedback.mp3" preload="auto"></audio>
+  <audio id="bulletSfx" src="music/bullets.mp3" preload="auto"></audio>
+  <audio id="slideQuizSfx" src="music/slide-quiz.mp3" preload="auto"></audio>
+  <audio id="rewardCardSfx" src="music/card-reward.mp3" preload="auto"></audio>
+  <audio id="wrapperResultSfx" src="music/wrapper-result.mp3" preload="auto"></audio>
+  <audio id="itemResultSfx" src="music/item-result.mp3" preload="auto"></audio>
+  <audio id="numberCountingSfx" src="music/counting-number.mp3" preload="auto"></audio>
+  <audio id="quizEndSfx" src="music/quiz-end.mp3" preload="auto"></audio>
+  <audio id="stampSfx" src="music/stamp.mp3" preload="auto"></audio>
+  <audio id="putItemSfx" src="music/put-item.mp3" preload="auto"></audio>
+  <audio id="gradeSfx" src="music/grade.mp3" preload="auto"></audio>
+  <audio id="totalCandySfx" src="music/total-candy.mp3" preload="auto"></audio>
+  
   <header class="app-bar" id="app-bar">
     <div class="app-bar__user-identity">
-      <button id="btn-profile" class="user-identity__photo">
+      <button id="btn-profile" class="user-identity__photo no-click-sound">
         <img class="avatar-img" src="">
       </button>
       <div class="profile-menu">
@@ -47,13 +69,13 @@
     <nav id="navigation-drawer" class="app-bar__navigation">
       <ul>
         <li>
-          <a href="#/collection">
+          <a href="#/collection" class="button">
             <i class="fa-solid fa-trophy"></i>
             KOLEKSI
           </a>
         </li>
         <li>
-          <a href="#/leaderboard">
+          <a href="#/leaderboard" class="button">
             <i class="fa-solid fa-ranking-star"></i>
             PAPAN PERINGKAT
           </a>

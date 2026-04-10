@@ -24,7 +24,7 @@ const Level = {
           </p>
         </div>
         <div class="game-details">
-          <button class="btn-mission" id="btnMission" tooltip="Misi">
+          <button class="btn-mission no-click-sound" id="btnMission" tooltip="Misi">
             <i class="fa-solid fa-flag"></i>
           </button>
           <p>Skor Tertinggi: 
@@ -40,13 +40,13 @@ const Level = {
             <p class="modal-mission__title">
               Misi <i class="fa-solid fa-flag"></i>
             </p>
-            <button class="btn-close trigger" href="#">
+            <button class="btn-close trigger no-click-sound" href="#">
               <i class="fa fa-times" aria-hidden="true"></i>
             </button>
           </div>
           <div class="modal-mission__content">
           </div>
-          <button class="btn-ok">Oke, mengerti!</button>
+          <button class="btn-ok no-click-sound">Oke, mengerti!</button>
         </div>
       </div>
     `;
@@ -69,7 +69,8 @@ const Level = {
     const getCity = await DBSource.getCityByName(cityName);
     const city = getCity.data[0];
     missionContent.innerHTML = city.mission;
-    
+    const colorTheme = await DBSource.getColorTheme(city.id);
+    sessionStorage.setItem('colorTheme', JSON.stringify(colorTheme[0]));
 
     const from = sessionStorage.getItem('from');
 
@@ -84,15 +85,9 @@ const Level = {
       }, 500);
     }
 
-    
-    
-    
     const backgroundURL = `url(./wallpapers/${cityName.replace('%20', '-')}/1.png)`;
     levelContainer.style.backgroundImage = backgroundURL;
     content.style.padding = 0;
-
-    
-    
 
     const getModul = await DBSource.getModul(city.id);
     const modul = getModul.data[0];
@@ -108,9 +103,6 @@ const Level = {
     const levels = getLevelProgress.data;
 
     const buttonWrapper = document.querySelector('.button-wrapper');
-    // for (let i = 0; i < levels.length; i++) {
-    //   buttonWrapper.innerHTML += createButtonLevel(i+1);
-    // }
 
     levels.forEach((lv, index) => {
       buttonWrapper.insertAdjacentHTML('beforeend', createButtonLevel(lv.level));
@@ -128,38 +120,30 @@ const Level = {
       });
     })
 
-    // const button = document.querySelectorAll('.button-lv-pushable');
-    // button.forEach((opt, index) => {
-    //   const buttonText = opt.querySelector('.button-lv-front');
-    //   if (index > 3) {
-    //     opt.classList.add('locked');
-    //     buttonText.innerHTML += '<i class="fa-solid fa-lock"></i>';
-    //   }
-
-    //   opt.addEventListener('click', () => {
-    //     const numLevel = index + 1;
-    //     sessionStorage.setItem('level', numLevel);
-    //     window.location.href = `#/game/${url.cityName}/level/${numLevel}/tutorial`;
-    //   })
-    // });
-
     const btnBack = document.querySelector('#btnBack');
     btnBack.addEventListener('click', () => {
       window.location.href = `#/lobby?id=${localStorage.getItem('id')}`;
     });
 
+    const missionSfx = document.querySelector('#missionSfx');
+
     btnCloseMission.addEventListener('click', () => {
       missionModal.classList.add('hide');
       btnMission.style.visibility = 'visible';
       this._activateButton();
+      missionSfx.currentTime = 0;
+      missionSfx.play();
     });
 
     btnMission.addEventListener('click', () => {
         // show modal
       const missionModal = document.querySelector('.modal-mission');
+      
       missionModal.style.display = 'block';
       setTimeout(() => {
         missionModal.classList.remove('hide');
+        missionSfx.currentTime = 0;
+        missionSfx.play();
       }, 100);
       
       btnMission.style.visibility = 'hidden';
@@ -170,8 +154,13 @@ const Level = {
       missionModal.classList.add('hide');
       btnMission.style.visibility = 'visible';
       this._activateButton();
+      missionSfx.currentTime = 0;
+      missionSfx.play();
     });
+
+    
   },
+
 
   _unableButton() {
     const btnLevel = document.querySelectorAll('.button-lv-pushable');

@@ -8,7 +8,7 @@ router.get('/reward/:cityId/:rewardName', async (req, res) => {
   const { cityId, rewardName } = req.params;
 
   try {
-    const searchQuery = 'SELECT candy_converted FROM game_reward WHERE city_id = ? AND name = ?';
+    const searchQuery = 'SELECT candy_converted FROM game_reward WHERE city_id = ? AND img_url = ?';
     const [searchResult] = await connection.query(searchQuery, [cityId, rewardName]);
 
     return res.json(

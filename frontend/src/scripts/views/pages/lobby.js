@@ -66,6 +66,12 @@ const Lobby = {
         btnBuyCity.style.display = 'flex';
       }
 
+      if (!city.is_available) {
+        currentSlide.querySelector('.coming-soon-text').style.display = 'block';
+        btnBuyCity.style.display = 'none';
+        padLock.style.display = 'none';
+      }
+
        // Arrow visibility controller
       btnPrev = currentSlide.querySelector('.prev');
       btnNext = currentSlide.querySelector('.next');
@@ -153,6 +159,8 @@ const Lobby = {
           let numOfCandy = parseInt(candyEl.textContent);
 
           await this._updateStudentOnReload(identityNumber);
+
+          console.log('yoo')
     
           let currentCandy = numOfCandy - parseInt(price);
           candyEl.innerHTML = currentCandy;

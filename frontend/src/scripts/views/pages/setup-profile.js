@@ -57,7 +57,7 @@ const SetupProfile = {
 
     btnChooseAvatar.forEach((option, index) => {
       const img = option.querySelector('img');
-      img.src = `./avatar/${gender}/${Avatars[gender][index]}`;
+      img.src = `./avatar/${Avatars[gender][index]}`;
       option.addEventListener('click', () => {
         for(let i = 0; i < 3; i++) {
           if (i !== index) {
@@ -66,7 +66,7 @@ const SetupProfile = {
         }
         option.classList.add('chosen');
         const imgUrl = option.querySelector('img').getAttribute('src');
-        const avatarImg = imgUrl.split(`./avatar/${gender}/`)[1];
+        const avatarImg = imgUrl.split(`./avatar/`)[1];
         chosenAvatar = avatarImg;
       })
     })

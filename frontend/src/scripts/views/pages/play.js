@@ -1,4 +1,4 @@
-import resultAnimations from "../../animations/result-animations";
+
 import DBSource from "../../data/db-source";
 import functionMap from "../../globals/function-map";
 import quizOption from "../../globals/quiz-option";
@@ -6,10 +6,11 @@ import tutorialData from "../../globals/tutorial-data";
 import UrlParser from "../../routes/url-parser";
 import generateQuiz from "../../utils/generate-quiz";
 import HeaderController from "../../utils/header-controller";
-import { showProgressBar } from "../../utils/play-handler";
+import { handleQuizFlow, setColorTheme, showProgressBar } from "../../utils/play-handler";
 import { startQuiz } from "../../utils/quiz";
+import buildReviewData from "../../utils/review-handler";
 import Tutorial from "../../utils/tutorial";
-import { createMainQuiz, createPopupTutorialPassed, createPopupTutorialUnpassed, createResultGameGL, createResultQuiz, createSubQuiz } from "../templates/template-creator";
+import {  createAnswerReview, createMainQuiz, createPopupTutorialPassed, createPopupTutorialUnavailable, createPopupTutorialUnpassed, createResultQuiz, createSubQuiz, renderReviewContent } from "../templates/template-creator";
 
 const Play = {
   async render() {
@@ -33,7 +34,9 @@ const Play = {
         <div id="imageModal">
           <div class="modal-content">
             <img src="./illustrations-quiz/gl-1-1a.png" class="modal-image">
-            <button class="close-btn">×</button>
+            <div class="close-btn">
+              <button class="close-btn">×</button>
+            </div>
           </div>
         </div>
         <div id="feedback-char" class="character hidden">
@@ -72,89 +75,120 @@ const Play = {
     sessionStorage.setItem('cityId', city.id);
 
     const getLevel = await DBSource.level(city.id, level);
-    console.log(getLevel);
     levelName.innerText = getLevel['level_name'];
 
     const getModul = await DBSource.getModul(city.id);
     const modul = getModul.data[0];
 
     const detailQuiz = await generateQuiz(modul.id, level);
-    console.log(detailQuiz)
     sessionStorage.setItem('detailQuiz', JSON.stringify(detailQuiz));
 
     const userData = JSON.parse(localStorage.getItem('user'));
     const studentId = userData.id;
     const findStudentQuizProgress = await DBSource.getStudentQuizProgress(studentId, modul.id, level);
 
-    const labelQuiz = document.querySelector('.quiz-title');
+    // const labelQuiz = document.querySelector('.quiz-title');
 
     sessionStorage.setItem('quizCounter', 0);
     sessionStorage.setItem('wrongAnswer', 0);
 
-    if (findStudentQuizProgress.statusCode === 404) {
-      await DBSource.addProgressQuiz(studentId, modul.id, level);
-      document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialUnpassed());
-      const popupOverlay = document.querySelector(".popup-overlay")
-      const btnStartTutorial= document.querySelector('#start-tutorial');
-      btnStartTutorial.addEventListener('click', () => {
-        sessionStorage.setItem('isThisWithTutorial', 1);
-        popupOverlay.remove();
-        labelQuiz.classList.add('show');
-        showProgressBar();
-        setTimeout(() => this.displayQuiz(detailQuiz, 0), 3000);
-      })
-    } else {
-      const quizProgress = findStudentQuizProgress.result;
-      sessionStorage.setItem('quizProgressId', quizProgress.id);
-      sessionStorage.setItem("isTutorialPassed", quizProgress["is_tutorial_passed"]);
-      if (quizProgress["is_tutorial_passed"]) {
-        // document.querySelector('.quiz-content').insertAdjacentHTML('beforeend', createResultGameGL());
-        // resultAnimations[0].playAnimations({
-        //   harvest: [
-        //     { plant: './rewards/mini-tree.png', count: 2, candy: 26 },
-        //     { plant: './rewards/health-park.png', count: 3, candy: 37 },
-        //   ],
-        //   scores: {
-        //     score: 223,
-        //     highScore: 244,
-        //     totalScore: 207774,
-        //   },
-        //   overall: 'D',
-        //   isPassed: false,
-        // });
-        // return;
-        document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialPassed());
-        sessionStorage.setItem('isThisWithTutorial', 0);
-        const btnRepeatTutorial = document.querySelector('#repeat-tutorial');
-        const popupOverlay = document.querySelector(".popup-overlay")
-        btnRepeatTutorial.addEventListener('click', async () => {
-          sessionStorage.setItem('isThisWithTutorial', 1);
-          popupOverlay.remove();
-          labelQuiz.classList.add('show');
-          await showProgressBar();
-          setTimeout(() => this.displayQuiz(detailQuiz, 0), 3000);
-        });
-        const btnStartQuiz= document.querySelector('#start-quiz');
-        btnStartQuiz.addEventListener('click', async() => {
-          await startQuiz();
+    await handleQuizFlow.call(this, {
+      findStudentQuizProgress,
+      studentId,
+      modul,
+      level,
+      detailQuiz
+    })
+
+    // if (findStudentQuizProgress.statusCode === 404) {
+    //   await DBSource.addProgressQuiz(studentId, modul.id, level);
+    //   const cityId = sessionStorage.getItem('cityId');
+    //   const tutorial = new Tutorial(tutorialData);
+      
+    //   if (tutorial.hasData(cityId, level)) {
+    //     document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialUnpassed());
+    //     const btnStartTutorial= document.querySelector('#start-tutorial');
+    //     btnStartTutorial.addEventListener('click', async () => {
+    //       sessionStorage.setItem('isThisWithTutorial', 1);
+    //       const popupOverlay = document.querySelector(".popup-overlay");
+    //       popupOverlay.remove();
+    //       labelQuiz.classList.add('show');
+    //       await showProgressBar();
+    //       setTimeout(() => this.displayQuiz(detailQuiz, 0), 3000);
+    //     });
+    //   } else {
+    //     document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialUnavailable());
+    //     const btnStartQuiz= document.querySelector('#start-quiz');
+    //     btnStartQuiz.addEventListener('click', async() => {
+    //       const popupOverlay = document.querySelector(".popup-overlay");
+    //       popupOverlay.remove();
+    //       await startQuiz();
           
-          popupOverlay.remove();
-          labelQuiz.classList.add('show');
-          await showProgressBar();
-          setTimeout(() => this.displayQuiz(detailQuiz, 1), 3000);
-        })
-      } else {
-        document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialUnpassed());
-        const popupOverlay = document.querySelector(".popup-overlay")
-        const btnStartTutorial= document.querySelector('#start-tutorial');
-        btnStartTutorial.addEventListener('click', async () => {
-          sessionStorage.setItem('isThisWithTutorial', 1);
-          popupOverlay.remove();
-          await showProgressBar();
-          setTimeout(() => this.displayQuiz(detailQuiz, 0), 3000);
-        });
-      }
-    }    
+    //       labelQuiz.classList.add('show');
+    //       await showProgressBar();
+          
+    //       setTimeout(() => this.displayQuiz(detailQuiz, 1), 3000);
+          
+    //     });
+    //   }
+    // } else {
+    //   const quizProgress = findStudentQuizProgress.result;
+    //   sessionStorage.setItem('quizProgressId', quizProgress.id);
+    //   sessionStorage.setItem("isTutorialPassed", quizProgress["is_tutorial_passed"]);
+    //   if (quizProgress["is_tutorial_passed"]) {
+    //     document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialPassed());
+    //     sessionStorage.setItem('isThisWithTutorial', 0);
+    //     const btnRepeatTutorial = document.querySelector('#repeat-tutorial');
+    //     const popupOverlay = document.querySelector(".popup-overlay")
+    //     btnRepeatTutorial.addEventListener('click', async () => {
+    //       sessionStorage.setItem('isThisWithTutorial', 1);
+    //       popupOverlay.remove();
+    //       labelQuiz.classList.add('show');
+    //       await showProgressBar();
+    //       setTimeout(() => this.displayQuiz(detailQuiz, 0), 3000);
+    //     });
+    //     const btnStartQuiz= document.querySelector('#start-quiz');
+    //     btnStartQuiz.addEventListener('click', async() => {
+    //       await startQuiz();
+          
+    //       popupOverlay.remove();
+    //       labelQuiz.classList.add('show');
+    //       await showProgressBar();
+    //       setTimeout(() => this.displayQuiz(detailQuiz, 1), 3000);
+    //     });
+    //   } else {
+    //     const cityId = sessionStorage.getItem('cityId');
+    //     const level = sessionStorage.getItem('level');
+    //     const tutorial = new Tutorial(tutorialData);
+       
+    //     if (tutorial.hasData(cityId, level)) {
+    //       document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialUnpassed());
+    //       const btnStartTutorial= document.querySelector('#start-tutorial');
+    //       btnStartTutorial.addEventListener('click', async () => {
+    //         sessionStorage.setItem('isThisWithTutorial', 1);
+    //         const popupOverlay = document.querySelector(".popup-overlay");
+    //         popupOverlay.remove();
+    //         labelQuiz.classList.add('show');
+    //         await showProgressBar();
+    //         setTimeout(() => this.displayQuiz(detailQuiz, 0), 3000);
+    //       });
+    //     } else {
+    //       document.querySelector('.play').insertAdjacentHTML('beforeend', createPopupTutorialUnavailable());
+    //       const btnStartQuiz= document.querySelector('#start-quiz');
+    //       btnStartQuiz.addEventListener('click', async() => {
+    //         const popupOverlay = document.querySelector(".popup-overlay");
+    //         popupOverlay.remove();
+    //         await startQuiz();
+            
+    //         labelQuiz.classList.add('show');
+    //         await showProgressBar();
+            
+    //         setTimeout(() => this.displayQuiz(detailQuiz, 1), 3000);
+            
+    //       });
+    //     }
+    //   }
+    // }    
   },
 
   async displayQuiz(detailQuiz, mainIndex, quizIndex = 0) {
@@ -162,7 +196,7 @@ const Play = {
     sessionStorage.setItem('mainIndex', mainIndex);
     sessionStorage.setItem('quizIndex', quizIndex);
     sessionStorage.setItem('correctStepPerQuiz', 0);
-    sessionStorage.setItem('answerDetail', '[]')
+    sessionStorage.setItem('answerDetail', '[]');
     
 
     if (mainIndex === 1) {
@@ -184,6 +218,9 @@ const Play = {
 
     const quizWrapper = document.querySelector('.quiz-content');
     quizWrapper.innerHTML += createMainQuiz(detailQuiz.main[mainIndex].question);
+    const slideQuizSfx = document.querySelector('#slideQuizSfx');
+    slideQuizSfx.currentTime = 0;
+    slideQuizSfx.play();
     const currentMainId = detailQuiz.main[mainIndex].id;
 
     setTimeout(() => {
@@ -198,7 +235,7 @@ const Play = {
 
     const progressBar = document.querySelector('.progress-bar');
     const minorProgressBar = progressBar.querySelectorAll('.minor-progress');
-    const currentSub = minorProgressBar[quizIndex].querySelector(".sub:not(.wrong)");
+    const currentSub = minorProgressBar[quizIndex].querySelector(".sub:not(.wrong):not(.right)");
 
     currentSub.classList.add('active'); 
 
@@ -206,16 +243,9 @@ const Play = {
 
     let currentStep = stepQuiz[stepIndex];
     
-    // const currentLevel = Number(sessionStorage.getItem('level'));
-    // const modulId = stepQuiz[0].modul_id;
-    if (currentStep.is_condition_step) {
-      const previousSubQuizId = stepQuiz[stepIndex - 1].id;
-      const options = (JSON.parse(sessionStorage.getItem('detailQuiz'))).answerChoices;
-      const correctAnswer = options.find(opt => opt.main_quiz_id === mainId && opt.sub_quiz_id === previousSubQuizId && opt.is_correct);
-      // const correctAnswer = choicesAnswer.choices.find(opt => opt.isCorrect === true);
-      if (correctAnswer.answer === "Tidak") {
-        currentStep = stepQuiz[stepIndex + 1]
-      }
+    if (currentStep.is_condition_step || currentStep.is_optional_step) {
+      const stepController = currentStep.step_controller;
+      currentStep = functionMap[stepController]('optional');
     } 
     
     const question = currentStep.question;
@@ -224,7 +254,13 @@ const Play = {
     
     const stepNumber = currentStep.step;
 
+    const slideQuizSfx = document.querySelector('#slideQuizSfx');
+    slideQuizSfx.currentTime = 0;
+    slideQuizSfx.play()
+    
     quizWrapper.insertAdjacentHTML('beforeend', createSubQuiz(stepNumber, question, mainId) + answerTemplate.htmlElement);
+
+    setColorTheme();
 
     const modul = (await DBSource.getModulById(currentStep.modul_id)).data[0];
 

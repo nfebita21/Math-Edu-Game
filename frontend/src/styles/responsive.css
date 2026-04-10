@@ -30,12 +30,18 @@
   .app-bar .app-bar__navigation ul {
     display: flex;
     justify-content: end;
-    gap: 7px;
+    gap: 5px;
     height: 100%;
+    width: 100%;
+  }
+
+  .app-bar .app-bar__navigation ul li {
+    box-sizing: border-box;
   }
 
   .app-bar .app-bar__navigation ul li a {
     color: var(--orange-light);
+    color: white;
     margin: 0;
     padding: 13px;
     font-size: 12px;
@@ -44,10 +50,24 @@
     gap: 7px;
   }
 
-  .app-bar .app-bar__navigation ul li a:hover {
-    background-color: transparent;
+  .app-bar .app-bar__navigation ul li {
+    border-bottom: solid 5px transparent;
+    padding-top: 4px;
+    /* border-radius: 4px; */
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .app-bar .app-bar__navigation ul li:has(a:hover), 
+  .app-bar__navigation ul li.active {
+    border-bottom: solid 5px var(--primary);
     color: var(--primary);
   }
+
+  .app-bar__navigation ul li.active a {
+    color: var(--primary);
+  }
+
 
   .btn-city-info img{
     width: 40px;
@@ -179,6 +199,26 @@
 
   .next-level button, button.btn-try-again {
     width: 120px;
+  }
+
+  .review-container {
+    flex-direction: row;
+  }
+
+  .review-sidebar {
+    flex-direction: column;
+    width: 20%;
+    border-right: none;
+  }
+
+  .review-sidebar .review-item {
+    border-right: none;
+    border-bottom: 1px solid var(--primary);
+  }
+
+  .review-steps li .step-num {
+    width: 22px;
+    font-size: 18px;
   }
 }
 
@@ -491,6 +531,35 @@
     padding: 10px 12px;
     font-size: 15px;
   }
+
+  .comparison-container {
+    /* padding-top: 40px; */
+  }
+
+  .comparison-container:has(.fraction-option) {
+    /* padding-top: 20px; */
+  }
+
+  .comparison-container ~ .btn-submit-result__container {
+    /* margin-top: 50px; */
+  }
+
+  .comparison-content .item-name {
+    font-size: 13px;
+  }
+
+  .comparison-content .item-value {
+    font-size: 20px;
+  }
+
+  .double-down-arrow svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .comparison-container:has(.fraction-option) {
+    font-size: 25px;
+  }
 }
 
 
@@ -548,7 +617,7 @@
     position: relative;
     top: 30px;
     width: 80%;
-    max-width: 350px;
+    max-width: 400px;
   }
 
   .auth-container .signup-offer {
@@ -608,7 +677,7 @@
 
   .side-content .text-content {
     position: relative;
-    top: 15px;
+    top: 25px;
   }
 
   /* LOBBY */
@@ -730,7 +799,7 @@
   }
 
   .tutorial-instruction {
-    right: 15%;
+    right: 8%;
   }
 
   .dialog-tutorial {
@@ -776,7 +845,7 @@
   /* Login */
 
   .auth-container .app-title {
-    max-width: 400px;
+    max-width: 500px;
   }
 
   .form-wrapper {

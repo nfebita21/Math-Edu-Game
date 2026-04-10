@@ -10,12 +10,4 @@ const connection = mysql.createPool({
   connectionLimit: 10
 });
 
-// connection.connect((err) => {
-//   if (err) {
-//     console.error('Koneksi gagal:', err);
-//     return;
-//   }
-//   console.log('Koneksi berhasil ke database!');
-// });
-
 export default connection;

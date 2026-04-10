@@ -294,6 +294,20 @@ class DBSource {
     const responseJson = await response.json();
     return responseJson;
   }
+
+  static async getQuizReview(historyId) {
+    const response = await fetch(API_ENDPOINT.quizReview(historyId));
+
+    const responseJson = await response.json();
+    return responseJson;
+  }
+
+  static async getColorTheme(cityId) {
+    const response = await fetch(API_ENDPOINT.colorTheme(cityId));
+
+    const responseJson = await response.json();
+    return responseJson;
+  }
 }
 
 

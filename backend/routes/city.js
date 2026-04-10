@@ -50,6 +50,17 @@ router.get('/leaderboard/:cityId', async (req, res) => {
   }
 });
 
+router.get('/color-theme/:cityId', async (req, res) => {
+  const { cityId } = req.params;
+  try {
+    const query = "SELECT * FROM color_theme WHERE city_id = ?";
+    const [result] = await connection.query(query, [cityId]);
+    res.json( result );
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/high-score', async (req, res) => {
   const { studentId, cityId } = req.query;
   try {

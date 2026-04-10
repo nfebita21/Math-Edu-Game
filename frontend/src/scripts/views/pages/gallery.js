@@ -21,7 +21,7 @@ const Gallery = {
       </div>
       <div class="container gallery-container"></div>
       <div id="galleryModal" class="gallery-modal">
-        <span class="close-gallery-modal">&times;</span>
+        <span class="close-gallery-modal button">&times;</span>
         <div class="gallery-modal__content">
           <img id="galleryModalImage" src="./secret-spots/kanal-serenity.jpg" alt="Preview">
           <div id="galleryModalCaption" class="gallery-modal__caption">
@@ -125,6 +125,7 @@ const Gallery = {
         let badgeCards = cardsWrapper[cityIndex].querySelectorAll('.badge-card');
         let badgeCard = badgeCards[0];
         badgeCard.src = 'red-badge.png';
+        badgeCard.classList.add('advanced');
       }
     })
   },

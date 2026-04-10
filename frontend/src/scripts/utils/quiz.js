@@ -37,37 +37,211 @@ const extractDecimal = (str) => {
 
 
 const parseFraction = (str) => {
-  console.log(str)
-  const fractionStr = extractFraction(str);
-  
-  let match = fractionStr.match(/\[FRAC:(.*?)\]/);
-  if (!match) return null;
+  const regex = /\[FRAC:[^\]]+\]/g;
+  const results = [];
+  let match;
 
-  let fracPart = match[1]; 
-  
-  let integer = null;
-  let numerator = null;
-  let denominator = null;
+  // cari semua pecahan di dalam string
+  while ((match = regex.exec(str)) !== null) {
+    const fractionStr = extractFraction(match[0]);
+    if (!fractionStr) continue;
 
-  if (fracPart.includes("-")) {
-    let [intPart, frac] = fracPart.split("-");
-    integer = parseInt(intPart, 10);
+    const inner = fractionStr.match(/\[FRAC:(.*?)\]/);
+    if (!inner) continue;
 
-    let [num, den] = frac.split("/");
-    numerator = parseInt(num, 10);
-    denominator = parseInt(den, 10);
-  } else {
-    let [num, den] = fracPart.split("/");
-    numerator = parseInt(num, 10);
-    denominator = parseInt(den, 10);
+    const fracPart = inner[1];
+    let integer = null;
+    let numerator = null;
+    let denominator = null;
+
+    if (fracPart.includes("-")) {
+      const [intPart, frac] = fracPart.split("-");
+      integer = parseInt(intPart, 10);
+
+      const [num, den] = frac.split("/");
+      numerator = parseInt(num, 10);
+      denominator = parseInt(den, 10);
+    } else {
+      const [num, den] = fracPart.split("/");
+      numerator = parseInt(num, 10);
+      denominator = parseInt(den, 10);
+    }
+
+    results.push({ integer, numerator, denominator });
   }
 
-  return { integer, numerator, denominator };
-}
+  return results;
+};
 
 const extractFraction = (str) => {
   let match = str.match(/\[.*?\]/);
   return match[0];
+}
+
+const renderRawFraction = (str) => {
+  // 1️⃣ PECAHAN CAMPURAN: a-b/c
+  const mixed = str.match(/^(\d+)-(.+)\/(.+)$/);
+  if (mixed) {
+    const [, integer, num, den] = mixed;
+    return `
+      <span class="fraction-wrapper">
+        <span class="integer">${integer}</span>
+        <span class="fraction">
+          <span class="numerator">${renderSingleExpression(num)}</span>
+          <span class="denominator">${renderSingleExpression(den)}</span>
+        </span>
+      </span>
+    `;
+  }
+
+  // 3️⃣ FRACTION BIASA: a/b
+  if (str.includes('/')) {
+    const [num, den] = str.split('/');
+    if (num.includes(',')) {
+      const nums = num.split(',');
+      return nums.map(num => `
+        <span class="fraction-wrapper">
+          <span class="integer"></span>
+          <span class="fraction">
+            <span class="numerator">${renderSingleExpression(num)}</span>
+            <span class="denominator">${renderSingleExpression(den)}</span>
+          </span>
+        </span>
+      `).join(', ');
+    }
+
+    return `
+      <span class="fraction-wrapper">
+        <span class="integer"></span>
+        <span class="fraction">
+          <span class="numerator">${renderSingleExpression(num)}</span>
+          <span class="denominator">${renderSingleExpression(den)}</span>
+        </span>
+      </span>
+    `;
+  }
+
+  // 4️⃣ ANGKA BIASA
+  return str;
+}
+
+const isImageFile = (str) => {
+  return /\.(png|jpg|jpeg|gif|webp)$/i.test(str);
+}
+
+const renderSingleExpression = (str) => {
+  return str.replace(/[*:]/g, (op) => {
+    if (op === '*') return ' <span class="operator">x</span> ';
+    if (op === ':') return ' <span class="operator">:</span> ';
+  });
+}
+
+const isFullFraction = (str) => {
+  const slashIndex = str.indexOf('/');
+  if (slashIndex === -1) return false;
+
+  const left = str.slice(0, slashIndex);
+  const right = str.slice(slashIndex + 1);
+
+  return left.includes('*') && right.includes('*');
+};
+
+
+const formatAnswerContent = (str) => {
+  if (!str) return '';
+
+  // IMAGE
+  if (isImageFile(str)) {
+    return `<img src="./illustrations-quiz/${str}" alt="answer-image">`;
+  }
+
+  // STRING ONLY
+  if (!/[0-9]/.test(str)) return str;
+
+  // 1️⃣ COMPARISON (TOP LEVEL)
+  const comparisonMatch = str.match(/[><]/);
+  
+  if (comparisonMatch) {
+    let commonDenom = '';
+    if (str.includes('|')) {
+      const parts = str.split('|');
+
+      str = parts[0];
+
+      if (parts[1]) {
+        commonDenom = parts[1].split(',');
+      }
+    }
+    const op = comparisonMatch[0];
+    const index = str.indexOf(op);
+
+    const left = str.slice(0, index);
+    const right = str.slice(index + 1);
+
+    return `
+      ${formatAnswerContent(left)}
+      <span class="operator">${op}</span>
+      ${formatAnswerContent(right)}
+      ${
+        commonDenom 
+        ? `
+            <i class="fa-solid fa-arrow-right arrow-separator"></i> 
+          ${formatAnswerContent(commonDenom[0])} 
+          <span class="operator">${op}</span>
+          ${formatAnswerContent(commonDenom[1])}
+        ` 
+        : ''}
+    `;
+  }
+
+  // FPB and Ratio
+  if (/^\d+\|/.test(str)) {
+    const splitted = str.split("|");
+    return `
+      FPB: ${splitted[0]}<br>
+      → ${splitted[1]}
+    `;
+  }
+
+  // Multiple answers
+  if (str.includes('&')) {
+    return str
+      .split('&')
+      .map(s => formatAnswerContent(s))
+      .join('<span class="line-break"></span>');
+  }
+
+  // PERSAMAAN (LEVEL TERLUAR)
+  if (str.includes('=')) {
+    return str
+      .split('=')
+      .map(s => formatAnswerContent(s))
+      .join(' <span class="operator">=</span> ');
+  }
+
+  // Cek apakah pecahan perkalian
+  if (isFullFraction(str)) {
+    return renderRawFraction(str);
+  }
+
+  // OPERATOR LUAR (* atau :)
+  const opMatch = str.match(/[*:]/);
+  if (opMatch) {
+    const op = opMatch[0];
+    const index = str.indexOf(op);
+
+    const left = str.slice(0, index);
+    const right = str.slice(index + 1);
+
+    return `
+      ${formatAnswerContent(left)}
+      <span class="operator">${op === '*' ? 'x' : ':'}</span>
+      ${formatAnswerContent(right)}
+    `;
+  }
+
+  // SISANYA → PECAHAN / ANGKA
+  return renderRawFraction(str);
 }
 
 const startQuiz = async () => {
@@ -152,9 +326,9 @@ const saveQuiz = async (dataToUpdated) => {
   await addCandyToWallet(totalCandy);
 }
 
-const addQuizDetail = (stepId, answer, isCorrect) => {
+const addQuizDetail = (stepId, answer, correctAnswer, isCorrect) => {
   const answerDetail = JSON.parse(sessionStorage.getItem('answerDetail'));
-  answerDetail.push({stepId, answer, isCorrect});
+  answerDetail.push({stepId, answer, correctAnswer, isCorrect});
 
   sessionStorage.setItem('answerDetail', JSON.stringify(answerDetail));
 }
@@ -176,6 +350,9 @@ const saveAnswerDetail = async (cityId, mainId, correctStepPerQuiz) => {
 
     if (reward) {
       await DBSource.studentGalleryAddiction(student.id, reward.id);
+      const rewardCardSfx = document.querySelector('#rewardCardSfx');
+      rewardCardSfx.currentTime = 0;
+      rewardCardSfx.play();
       await showRewardCard(reward);
     }
   }
@@ -201,4 +378,4 @@ const getMainIndex = (mainId) => {
   return mainIndex;
 }
 
-export { renderFractionText, parseFraction , startQuiz, scoringHandler, getLetterGrade, calculateOverallValue, getValueColor, getvalueLabel, hasPassedOverall, saveQuiz, addQuizDetail, saveAnswerDetail, extractDecimal, isPowerOfTen, getMainIndex };
+export { renderFractionText, parseFraction , startQuiz, scoringHandler, getLetterGrade, calculateOverallValue, getValueColor, getvalueLabel, hasPassedOverall, saveQuiz, addQuizDetail, saveAnswerDetail, extractDecimal, isPowerOfTen, getMainIndex, formatAnswerContent };

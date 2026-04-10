@@ -17,12 +17,35 @@ html {
 body {
   font-family: 'Josefin Sans', sans-serif;
   background-color: var(--bg-body);
+  /* background-image: url(/src/public/bg-pattern.png); */
+  /* background-size: 400px;
+  background-repeat: repeat; */
   color: var(--off-black);
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url(/src/public/bg-pattern.png) repeat;
+  background-size: 400px;
+  /* filter: grayscale(100%); */
+  /* filter: saturate(10%); */
+  /* filter: contrast(70%); */
+  z-index: -2; /* biar di belakang konten */
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.5); /* lapisan putih transparan */
+  z-index: -1;
 }
 
 .hidden {
@@ -39,8 +62,8 @@ button {
 */
 
 .app-bar {
-  padding-inline: 10px;
-  background-color: var(--bg-body);
+  padding-left: 10px;
+  /* background-color: var(--bg-body); */
   display: none;
   align-items: center;
   justify-content: space-between;
@@ -527,6 +550,7 @@ button#editName:hover, button#editAvatar:hover {
 
 .app-bar .app-bar__navigation ul li {
   list-style: none;
+  background-color: var(--orange-middle);
 }
 
 .app-bar .app-bar__navigation ul li a {
@@ -565,6 +589,7 @@ main {
 */
 
 footer {
+  background-color: var(--bg-body);
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -776,6 +801,7 @@ footer p {
   white-space: nowrap;
   will-change: box-shadow,transform;
   font-size: 12px;
+  font-weight: bold;
   margin-top: 10px;
   z-index: 100;
 }
@@ -1031,6 +1057,24 @@ img.padlock {
   display: none;
   top: 40%;
 }
+
+.coming-soon-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg); /* miring ke kiri */
+  transform: translate(-50%, -50%) rotate(-12deg);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 40px; /* diperbesar */
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  user-select: none;
+  display: none;
+}
+
 .btn-buy-city {
   position: absolute;
   bottom: 30%;
@@ -1153,6 +1197,7 @@ img.padlock {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   /* padding-left: 10px; */
   z-index: 999;
+  font-family: 'Josefin Sans';
 }
 
 .btn-back-to-lobby i {
@@ -1166,6 +1211,7 @@ img.padlock {
   right: 0%;
   transition-duration: .2s;
   font-size: 12px;
+  /* font-family: ; */
   display: flex;
 }
 
@@ -1280,7 +1326,7 @@ img.padlock {
 .category-cards-container {
   border: 1.5px solid var(--primary);
   border-radius: 5px;
-  /* position: relative; */
+  position: relative;
   align-self: auto;
   width: 90%;
   /* overflow-x: visible; */
@@ -1342,6 +1388,12 @@ img.padlock {
 
 .gallery__card .badge-card {
   -webkit-filter: drop-shadow(1.95px 1.95px 2.6px #000026);
+  /* width: 100%;
+  height: 100%; */
+}
+
+.gallery__card:has(.advanced) {
+  overflow: hidden;
 }
 
 .gallery__card-content {
@@ -1355,17 +1407,139 @@ img.padlock {
   height: 100%;
 }
 
-.gallery__card-content img {
+.gallery__card-content .image-container {
   width: 95%;
   border: 1px solid var(--orange-light);
   border-radius: 2px;
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  /* min-height: 0; */
+}
+
+.gallery__card:has(.advanced) .image-container {
+  min-height: 0;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.gallery__card:has(.advanced) .image-container:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 18%;
+  height: 100%;
+  z-index: 2;
+
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%, /* 🔹 PUTIH LEBIH TIPIS */
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  transform: skewX(-25deg);
+  animation: rareEffect 2.5s ease-in-out infinite;
+}
+
+@keyframes rareEffect {
+  0% {
+    left: -75%;
+  }
+
+  40% {
+    left: 125%;
+  }
+
+  100% {
+    left: 125%;
+  }
+}
+
+.image-container .sparkle {
+  display: none;
+}
+
+.gallery__card:has(.advanced) .image-container .sparkle {
+  display: block;
+  position: absolute;
+  width: 0.6rem;
+  aspect-ratio: 1;
+  pointer-events: none;
+  /* transform-box: fill-box;
+  transform-origin: center; */
+}
+
+.sparkle use {
+  fill: rgba(255,255,255,0.8);
+}
+
+.gallery__card:has(.advanced) .image-container .sparkle {
+  /* --delay-step: 1.5; */
+  --cycle: 2.5s;
+  --gap: 0.9s;
+
+  animation: sparkle var(--cycle) infinite ease-in-out;
+  animation-delay: calc(-1 * var(--gap) * var(--d));
+  /* animation: sparkle 3s infinite ease-in-out;
+  animation-delay: calc(-1.6s * var(--d)); */
+	top:  calc((var(--y, 50) * 0.9 + 5) * 1%);
+  left: calc((var(--x, 50) * 0.9 + 5) * 1%);
+	transform: translate(-50%, -50%) scale(0);
+}
+
+@keyframes sparkle {
+	50% {
+		transform: translate(-50%, -50%) scale(var(--s, 1));
+	}
+}
+
+.sparkle.s1 {
+  --x: 0;
+	--y: 20;
+	--s: 1.1;
+	--d: 1;
+}
+
+.sparkle.s2 {
+  --x: 15;
+	--y: 80;
+	--s: 1.25;
+	--d: 2;
+}
+
+.sparkle.s3 {
+  --x: 45;
+	--y: 40;
+	--s: 1.1;
+	--d: 3;
+}
+
+.sparkle.s4 {
+  --x: 75;
+	--y: 60;
+	--s: 0.9;
+	--d: 4;
+}
+
+.sparkle.s5 {
+  --x: 100;
+	--y: 30;
+	--s: 0.8;
+	--d: 5;
 }
 
 .gallery__card-content p {
   font-size: 12px;
   color: white;
   text-align: center;
-  height: 100%;
+  height: 35px;
   width: 90%;
   line-height: 130%;
 }
@@ -1427,8 +1601,6 @@ img.padlock {
   padding: 20px;
   padding-top: 50px;
   margin-top: 8px;
-  /* font-size: 18px; */
-  /* background: rgba(0,0,0,0.4); */
   background: linear-gradient(
     to top,                  
     rgba(0,0,0,8) 0%,        
@@ -2190,6 +2362,7 @@ img.padlock {
 .button-lv-pushable.locked {
   cursor: default;
   touch-action: none;
+  pointer-events: none;
 }
 
 .button-lv-pushable.locked .button-lv-shadow {
@@ -2362,6 +2535,11 @@ img.padlock {
 }
 
 /* Quiz Green Land */
+
+.minor-progress {
+  position: relative;
+}
+
 .minor-progress.not-counted {
   background-color: var(--orange-light);
   opacity: .7;
@@ -2375,13 +2553,15 @@ img.padlock {
   padding-inline: 5px;
   width: 75%;
   position: relative;
+  z-index: 20 !important;
 }
 
 .gl-minor-progress {
   display: flex;
+  flex: 1;
   align-items: end;
   justify-content: space-evenly;
-  width: 20%;
+  /* width: 20%; */
 }
 
 .gl-progress-bar .bullet {
@@ -2476,12 +2656,90 @@ img.padlock {
   background-color: #f25c54;
 }
 
+.gl-minor-progress .bullet.right {
+  background-color: green;
+}
+
+.minor-progress .milestone:hover {
+  cursor: pointer;
+}
+
+.minor-progress .milestone:hover + .detail-progress-reward {
+  display: flex;
+}
+
+.detail-progress-reward {
+  position: absolute;
+  z-index: 20;
+  display: none;
+  gap: 8px;
+  border-radius: 5px;
+  top: 130%;
+  left: 40%;
+  padding: 5px;
+  padding-left: 7px;
+  width: 200px;
+  font-family: 'Fira Code', serif;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.detail-progress-reward::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
+
+  /* kasih bayangan segitiganya juga */
+  filter: drop-shadow(0px -1px 1px rgba(27, 31, 35, 0.15));
+}
+
+
+.detail-progress-reward__image img {
+  width: 45px;
+  height: 45px;
+  border: 1px solid var(--off-black);
+}
+
+.progress-reward-level {
+  font-size: 8px;
+}
+
+.detail-progress-title {
+  font-size: 14px;
+}
+
+.detail-progress-reward__information {
+  font-size: 11px;
+  margin-top: 10px;
+}
+
+.detail-progress-reward-value {
+  font-size: 13px;
+  font-family: 'Acme';
+}
+
+.detail-progress-reward-value img {
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
+}
+
 .quiz-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 12px;
-  flex-grow: 1;
+  /* flex-grow: 1; */
+  flex: 1;
+  /* height: 100%; */
+  min-height: 0;
+  position: relative;
 }
 
 .main-quiz {
@@ -2490,7 +2748,7 @@ img.padlock {
   animation: unrollX .5s ease-out forwards;
   /* white-space: nowrap; */
   width: 90%;
-  background-color: #c4e0b380;
+  /* background-color: #c4e0b380; */
   padding: 15px;
   border-radius: 8px;
   /* z-index: 2; */
@@ -2534,7 +2792,7 @@ img.padlock {
   transform-origin: left;              /* Efek muncul dari kiri */
   animation: unrollX .5s ease-out forwards;
   margin-top: 20px;
-  background-color: #c4e0b3;
+  /* background-color: #c4e0b3; */
   width: 90%;
   padding: 10px;
   padding-top: 35px;
@@ -2542,7 +2800,7 @@ img.padlock {
 }
 
 .sub-quiz h2 {
-  background-color: #548235;
+  /* background-color: #548235; */
   font-size: 14px;
   width: fit-content;
   padding: 5px 12px;
@@ -2571,6 +2829,10 @@ img.padlock {
   align-items: center;
 }
 
+.result .fraction-wrapper {
+  font-size: 18px;
+}
+
 .quiz-answer {
   visibility: hidden;
   position: absolute;
@@ -2597,7 +2859,7 @@ img.padlock {
   width: 35px;
   height: 40px;
   border-radius: 4px;
-  border: 2px solid #548235;
+  /* border: 2px solid #548235; */
   font-size: 12px;
   font-family: 'Josefin Sans', sans-serif;
   text-align: center;
@@ -2635,7 +2897,6 @@ img.padlock {
   z-index: 99;
   pointer-events: none;
   width: 40px;
-  /* top: 30px; */
 }
 
 .finger-container img {
@@ -2674,6 +2935,10 @@ img.padlock {
 
 .calc-result .number-buttons button:hover {
   background-color: rgb(84, 130, 53, .5);
+}
+
+div.btn-fraction {
+  position: relative;
 }
 
 .btn-fraction {
@@ -2719,6 +2984,11 @@ img.padlock {
   gap: 5px;
 }
 
+div.first-fraction__denominator.number-input, div.first-fraction__numerator.number-input {
+  justify-content: end;
+  /* padding: 0; */
+}
+
 .first-fraction, .second-fraction {
   height: 25px !important;
 }
@@ -2760,6 +3030,11 @@ button.btn-submit-result {
   justify-content: center;
   gap: 8px;
   width: fit-content;
+  position: relative;
+}
+
+.fraction-question #fraction {
+  /* font-size: 22px; */
 }
 
 .fraction-question>.fraction-container, .optional-frac-result .fraction-container {
@@ -2773,7 +3048,7 @@ button.btn-submit-result {
 }
 
 #fraction .denominator {
-  border-top: 2px solid black;
+  /* border-top: 2px solid black; */
 }
 
 .fraction-clue {
@@ -2806,8 +3081,13 @@ button.btn-submit-result {
   align-items: center;
   gap: 7px;
   position: relative;
-  background-color: white;
+  background-color: transparent;
   padding: 5px;
+  font-size: 20px;
+}
+
+.multiplication-pair.focused {
+  background-color: white;
 }
 
 .number-buttons.fr-result .btn-fraction {
@@ -2907,6 +3187,10 @@ button.btn-submit-result {
 .answer-choices button:hover .grass {
   display: block;
   animation: moveUpGrass .2s ease-out forwards;
+}
+
+div.option, div.option-a {
+  position: relative;
 }
 
 .answer-choices.simplified-answer .btn-next-step:hover #fraction .denominator{
@@ -3056,10 +3340,16 @@ button.btn-submit-result {
   border-radius: 5px;
 }
 
-#imageModal .close-btn {
+div.close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
+  z-index: 3;
+}
+
+#imageModal button.close-btn {
+  /* position: absolute; */
+  
   background-color: red;
   color: white;
   border: none;
@@ -3070,7 +3360,7 @@ button.btn-submit-result {
   cursor: pointer;
   line-height: 30px;
   text-align: center;
-  z-index: 3;
+  
 }
 
 .known {
@@ -3272,28 +3562,70 @@ button.btn-submit-result {
 }
 
 .curved-line, .swap-arrow {
-  /* width: 25px;
-  height: 2px;
-  background: black;
-  /* clip-path: ellipse(50% 25% at 50% 50%); */
-  /* border-radius: 50px !important;  */
   position: absolute;
   top: -15px;
-  /* border: 1px solid black; */
   color: black;
+}
+
+.arrow-line {
+  position: absolute;
+}
+
+.curved-line.fraction-conversion {
+  top: 46px;
+}
+
+.curved-line.fraction-conversion.addition {
+  top: 14px;
+  left: 10px;
+}
+
+.curved-line.fraction-conversion path {
+  stroke: var(--orange-old);
 }
 
 .curved-line path {
   stroke: #ff0000;
 }
 
-.curved-line.flip-horizontal {
+.arrow.flip-horizontal {
   transform: scaleX(-1);
+}
+
+.curved-line.flip-vertical {
+  transform: scaleY(-1);
+}
+
+.curved-line.flip-horizontal.flip-vertical {
+  transform: scaleX(-1) scaleY(-1);
 }
 
 .tutorial-clue__wrapper, .tutorial-clue, .tutorial-instruction {
   position: absolute;
   z-index: 1500;
+}
+
+.curved-arrow {
+  position: absolute;
+  top: 15px;
+  left: -25px;
+}
+
+.fraction-question .decimal {
+  position: relative;
+}
+.double-curved {
+  position: absolute;
+  top: 3px;
+  left: 7.5px;
+  width: 30px;
+  height: 30px;
+  overflow: visible;
+}
+
+.double-curved text {
+  width: 5px;
+  height: auto;
 }
 
 .tutorial-clue {
@@ -3320,10 +3652,38 @@ button.btn-submit-result {
   font-family: "Acme", serif;
 }
 
+.tutorial-clue .clue-list {
+  display: none;
+  list-style: none;
+  margin-top: 8px;
+}
+
+.clue-list li {
+  /* background-color: var(--orange-old); */
+  font-size: 12.5px;
+  min-width: 150px;
+  font-family: "Acme", serif;
+  padding: 7px;
+  border-radius: 5px;
+  /* color: white; */
+  border: 2px solid var(--orange-old);
+}
+
+span.result {
+  /* color: green; */
+}
+
+.clue-list .fa-seedling {
+  color: var(--primary);
+}
+
+.tutorial-clue .clue-list.show {
+  display: block;
+}
 
 .tutorial-instruction {
   top: 5%;
-  right: 5%;
+  right: 10%;
   margin-left: 10px;
   max-width: 100px;
   width: min-content;
@@ -3335,7 +3695,7 @@ button.btn-submit-result {
   padding: 7px;
   border-radius: 5px;
   font-size: 12.5px;
-  min-width: 100px;
+  width: 100px;
   font-family: "Acme", serif;
   text-align: center;
   color: var(--off-black);
@@ -3398,6 +3758,13 @@ button.btn-submit-result {
   animation: shakeSide 2s infinite ease-in-out;
 }
 
+.calc-result .fraction-wrapper.mixed .right-arrow_multiplication{
+  animation: none;
+  top: 55px;
+  left: 32px;
+  width: 20px;
+}
+
 @keyframes shakeSide {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(4px); }
@@ -3431,7 +3798,7 @@ button.btn-submit-result {
 }
 
 .focused {
-  z-index: 1000;
+  z-index: 10;
 }
 
 .btn-next__tutorial {
@@ -3585,34 +3952,6 @@ button.btn-submit-result {
 }
 
 .modal-content button.btn-right-arrow {
-  /* position: absolute; */
-  /* bottom: 0;
-  right: 5px; */
-  /* top: -30px;
-  width: 100px;
-  height: 100px;
-  border-top: 15px solid transparent;
-  border-bottom: 15px solid transparent;
-  border-left: 25px solid #333; Warna solid */
-  /* background: none;
-  cursor: pointer;
-  transition: box-shadow 0.3s ease;
-  outline: none;
-  border: solid 1px black;
-  z-index: 1000; */
-  /* --bg-color: black;
-  --glow-color: #00ffff;
-
-  width: 60px;
-  height: 40px;
-  background: var(--bg-color);
-  border: none;
-  cursor: pointer;
-  clip-path: polygon(
-    0% 0%, 75% 0%, 75% 25%, 100% 50%,
-    75% 75%, 75% 100%, 0% 100%
-  );
-  transition: box-shadow 0.3s ease; */
   position: absolute;
   right: 0;
   top: 100%;
@@ -4069,12 +4408,27 @@ svg.swap-arrow path {
 }
 
 /* LEVEL 3 Green Land */
+
+.calc-result .fraction-wrapper {
+  position: relative;
+}
+
 .fraction-wrapper.mixed {
   display: inline-flex;
   /* flex-direction: row; */
   justify-content: center;
   align-items: center;
    gap: 3px;
+}
+
+.fraction-wrapper .fraction span,
+.fraction-wrapper #fraction span {
+  text-align: center;
+}
+
+.fraction-wrapper .numerator {
+  min-width: 8px;
+  width: 100%;
 }
 
 .sub-quiz .fraction-wrapper {
@@ -4130,7 +4484,12 @@ svg.swap-arrow path {
 
 }
 
-.btn-add-result {
+div.btn-add-result {
+  position: relative;
+  margin-left: 3px;
+}
+
+button.btn-add-result {
   font-weight: bold;
   font-size: 18px;
   background-color: #548235;
@@ -4138,7 +4497,6 @@ svg.swap-arrow path {
   border-radius: 5px;
   width: 22px;
   height: 22px;
-  margin-left: 3px;
 }
 
 .optional-frac-result {
@@ -4177,15 +4535,20 @@ svg.swap-arrow path {
   margin-top: 16px;
 }
 
-.switch-input-mode {
+div.switch-input-mode {
   position: absolute;
+  top: -5px;
+  left: -5px;
+  z-index: 1;
+}
+
+button.switch-input-mode, .btn-switch-operator-comparison {
   font-size: 9px;
   background-color: #548235;
   color: white;
   border-radius: 3px;
   padding: 2px;
-  top: -5px;
-  left: -5px;
+  
 }
 
 .optional-frac-result.removable .remove-btn {
@@ -4223,8 +4586,8 @@ svg.swap-arrow path {
   font-size: 20px;
 }
 
-.fraction-container.multiplication .first-fraction__denominator,
-.fraction-container.multiplication .first-fraction__numerator {
+.fraction-container.multiplication .first-fraction__denominator:not(.number-input),
+.fraction-container.multiplication .first-fraction__numerator:not(.number-input) {
   display: flex;
   justify-content: end;
   width: 100%;
@@ -4236,4 +4599,1251 @@ svg.swap-arrow path {
 
 .fraction-container.multiplication .first-fraction__denominator {
   align-items: start;
+  justify-content: end;
+}
+
+.help-text {
+  width: 80px;
+  position: absolute;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* Level 4 */
+
+.result:has(.comparison-container) {
+  height: 100%;
+  justify-content: center;
+}
+
+.comparison-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  width: 100%;
+  /* padding-top: 20px; */
+}
+
+.comparison-container ~ .btn-submit-result__container {
+  /* margin-top: 100px; */
+}
+
+.comparison-choice {
+  flex: 1;
+  width: 40%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.comparison-choice:has(.fraction-container) {
+  width: auto;
+}
+
+.comparison-content  {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 100%;
+  position: absolute;
+}
+
+.comparison-content p {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: white;
+}
+
+.comparison-content .item-name {
+  top: 15%;
+  font-size: 10px;
+  height: 23%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.comparison-content .item-value {
+  top: 50%;
+  font-size: 18px;
+}
+
+.comparison-operator {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.comparison-operator p {
+  background-color: #c4e0b3;
+  /* color: white; */
+  font-size: 12px;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.btn-switch-operator-comparison {
+  position: absolute;
+  top: 25px;
+  right: 5px;
+}
+
+.comparison-choice .pot {
+  width: 70%;
+  max-width: 140px;
+}
+
+.comparison-operator input {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  font-size: 18px;
+  border: 2px solid #548235;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.comparison-choice .plant {
+  position: absolute;
+  bottom: 70%;
+  width: 50%;
+  max-width: 90px;
+  z-index: -1;
+  display: none;
+}
+
+.comparison-choice .plant.chosen {
+  display: block;
+}
+
+.comparison-choice .fraction-container {
+  /* position: absolute; */
+  display: flex;
+}
+
+.comparison-choice .fraction-container div>input {
+  width: 100%;
+}
+
+.comparison-container .fraction-option {
+  background-color: #d2e9c7;
+  padding: 12px;
+  border-radius: 5px;
+}
+
+.comparison-container .fraction-option.chosen {
+  background-image: url(/src/public/broccoli.png);
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: 100% auto;
+}
+
+.double-down-arrow ~ .btn-submit-result__container {
+  /* margin-top: 50px; */
+}
+
+.comparison-container.fraction .comparison-choice {
+  position: static;
+  flex: 0 1 auto;
+}
+
+.comparison-container:has(.fraction-option) {
+  gap: 30px;
+  font-size: 28px;
+}
+
+.double-down-arrow {
+  display: flex;
+  justify-content: space-between;
+  width: 180px;
+  margin-top: 10px;
+}
+
+.comparison-container.fraction {
+  padding-top: 0;
+  margin-top: 10px;
+  width: 190px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.comparison-container.fraction .comparison-choice input {
+  border: 1px solid #548235;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  width: 40px;
+  height: 40px !important;
+}
+
+.choices {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  margin-top: 40px;
+  /* gap: 20px; */
+}
+
+.choices button:has(.leaf) {
+  position: relative;
+  background-color: transparent;
+  width: 80px;
+}
+
+.choices button.btn-leaf p {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-40%, -50%) rotate(-25deg);
+  font-family: 'Josefin Sans', sans-serif;
+  color: black;
+  font-size: 18px;
+  /* font-weight: bold; */
+  transition: transform 0.4s ease;
+}
+
+.choices .leaf {
+  width: 100%;
+  transform: rotate(25deg);
+  opacity: .7;
+  transition: transform 0.4s ease;
+}
+
+.choices button:has(.leaf):hover .leaf {
+  transform: rotate(45deg);
+  opacity: 1;
+}
+
+.choices button:has(.leaf):hover p {
+  transform: translate(-40%, -50%) rotate(0deg);
+}
+
+.choices .choice.flower {
+  border: 2px solid #fb6f92;
+  padding: 8px 12px;
+  border-radius: 5px;
+  position: relative;
+  font-family: "Bona Nova SC",serif;
+  font-size: 16px;
+  background-color: white;
+}
+
+.choice .sakura {
+  position: absolute;
+  width: 30px;
+  right: 0;
+  top: 0;
+  display: none;
+  opacity: .6;
+}
+
+.choices .choice.flower:hover .sakura {
+  display: block;
+}
+
+.fraction-series {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  /* margin-bottom: 25px; */
+}
+
+.fraction-series .number-box {
+  list-style: none;
+  border: 1px solid gray;
+  padding: 7px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.fraction-series .number-box .floral {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 100%;
+  max-height: 15px;
+  display: none;
+}
+
+.fraction-series .number-box.active .floral {
+  display: block;
+}
+
+.fraction-series ~ .divider {
+  width: 80%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.2); /* warna pudar */
+  margin: 10px auto;
+  border-radius: 2px;
+}
+
+.fraction-series ~ .calc-input .fraction-wrapper {
+  font-size: 22px;
+}
+
+.kontainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 50px;
+    width: 80%;
+    max-width: 400px;
+  }
+
+.box {
+    /* width: 100px;
+    height: 100px; */
+    min-height: 53px;
+    flex: 1;
+    background-color: #dda15e;
+    border: 1px solid #555;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    font-size: 24px;
+    font-weight: bold;
+    transition: all 0.25s ease;
+    padding: 10px;
+    position: relative;
+    border-radius: 4px;
+  }
+
+  .box .real-number {
+    position: absolute;
+    bottom: 110%;
+    /* transform: translateY(-10%); */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: normal;
+    z-index: -1;
+  }
+
+  .box .unreal-number {
+    z-index: 1;
+  }
+
+  .box.dragging {
+    opacity: 1 !important;
+    transform: scale(1);
+  }
+
+  .box.dragging .flower {
+    display: block;
+  }
+
+  .box.dragging .real-number {
+    display: none;
+  }
+
+  /* 🔥 Efek saat box sedang dijadikan target */
+  .box.dragover {
+    /* background-color: #ffe; */
+    /* border: 3px dashed #007bff; */
+    /* box-shadow: 0 0 10px rgba(0, 123, 255, 0.4); */
+    /* transform: scale(1.05); */
+  }
+
+  .box .flower {
+    position: absolute;
+    width: 70%;
+    bottom: 100%;
+    left: 40%;
+    z-index: -1;
+    display: none;
+  }
+
+  .box .pot {
+   width: 90%;
+   position: absolute;
+   display: none;
+  }
+
+  .box.pot-form {
+    background-color: transparent;
+    border: none;
+  }
+
+  .box.pot-form .pot {
+    display: block;
+  }
+
+  .box.pot-form .flower {
+    display: none;
+  }
+
+  .box.pot-form.dragover .flower {
+    display: block;
+    /* bottom: 90%; */
+  }
+
+  .box.pot-form .fraction {
+    font-size: 12px;
+  }
+
+  .box.pot-form .real-number {
+    display: none;
+  }
+
+  .slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* background: #fff; */
+    /* box-shadow: 0 2px 8px rgba(0,0,0,0.15); */
+    /* border-radius: 10px; */
+  }
+
+  .slider.answer-input {
+    max-width: 370px;
+    width: 100%;
+    height: 80px;
+  }
+
+  .slides {
+    display: flex;
+    transition: transform 0.4s ease-in-out;
+  }
+
+  .slider.answer-input .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    color: grey;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 50%;
+    font-size: 18px;
+    z-index: 2;
+  }
+
+  .slider.answer-input .arrow:hover {
+    /* background: rgba(0,0,0,0.7); */
+    color: black;
+  }
+
+  .slider.answer-input .arrow.left { left: 10px; }
+  .slider.answer-input .arrow.right { right: 10px; }
+
+  .slider.answer-input .slide {
+    min-width: 100%;
+    justify-content: center;
+  }
+
+  .slider.answer-input ~ .btn-submit-result__container {
+    margin-top: 10px;
+  }
+
+/* Level 5 Step 4 */
+.numerator-equalization__wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  max-width: 270px;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.equalization-pack {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 30px;
+  position: relative;
+}
+
+.initial-fraction {
+  background-color: rgba(106, 153, 78, .7);
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+}
+
+.initial-fraction #fraction .denominator {
+  border-top: 2px solid white;
+}
+
+.flower-stalk {
+  position: absolute;
+  height: 115px;
+  /* width: 135%; */
+  width: 38px;
+  z-index: -3;
+  overflow: hidden;
+  bottom: 45%;
+  /* background-color: rgba(106, 153, 78, .8); */
+}
+
+.flower-stalk img {
+  position: absolute;
+  object-fit: cover;
+  /* object-position: 0 -30px; */
+  width: 100%;
+  height: 100%;
+  clip-path: inset(26% 0 0 0);
+  transition: clip-path .5s ease-out;
+}
+
+.flower-stalk.grow img {
+  clip-path: inset(0 0 0 0);
+}
+
+.unreal-number #fraction {
+  font-size: clamp(15px, 5vw, 24px);
+}
+
+.box .unreal-number {
+  width: 100%;
+  text-align: center;
+}
+
+.unreal-number #fraction {
+  width: 100%;
+}
+
+.box.pot-form .unreal-number #fraction {
+  font-size: clamp(13px, 4vw, 24px);
+}
+
+/* Answer Review */
+
+.review-modal {
+  position: absolute;
+  z-index: 1;
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  /* display: flex; */
+  display: none;
+  flex-direction: column;
+}
+
+.review-modal h3 {
+  text-align: center;
+  font-family: "Bona Nova SC",serif;
+  font-size: 20px;
+}
+
+.review-modal .btn-close {
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  padding: 2px;
+  color: var(--orange-middle);
+  background-color: transparent;
+  font-size: 16px;
+}
+
+.review-modal .btn-close:hover {
+  color: var(--orange-old);
+}
+
+.review-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  flex: 1;
+  min-height: 0;
+  padding: 10px;
+}
+
+.review-sidebar {
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--primary);
+}
+
+.review-sidebar .review-item {
+  padding: 7px;
+  background-color: var(--orange-light);
+  color: white;
+  min-width: 60px;
+  border-right: 1px solid var(--primary);
+}
+
+.review-sidebar .review-item.selected,
+.review-sidebar .review-item:hover {
+  background-color: var(--orange-old);
+  font-weight: bold;
+}
+
+.review-content {
+  flex: 1;
+  overflow-y: scroll;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  min-height: 0;
+  border: 1px solid var(--primary);
+}
+
+.review-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.review-content::-webkit-scrollbar-thumb {
+  background: var(--primary);
+}
+
+.review-content .main-quiz {
+  width: 100%;
+}
+
+.review-content .main-quiz p,
+.review-content .main-quiz #fraction {
+  font-size: 16px;
+}
+
+.review-steps {
+  /* padding-left: 10px; */
+  /* display: flex; */
+  /* margin-top: 5px; */
+  /* overflow: hidden; */
+  flex: 1;
+  /* min-height: 0; */
+}
+
+.review-steps li {
+  /* position: relative; */
+  list-style: none;
+  /* overflow-x: visible; */
+  z-index: 1000;
+  
+  /* padding-right: 5px; */
+  
+  /* display: flex; */
+  border-bottom: 1.5px solid var(--primary);
+  display: flex;
+  align-items: stretch;
+  /* gap: 4px; */
+}
+
+.review-steps li .step-num {
+  /* position: absolute; */
+  /* left: 0;
+  top: 0; */
+  text-align: center;
+  width: 20px;
+  /* height: 100%; */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  /* line-height: 50%; */
+  /* transform: translateY(-50%); */
+  background-color: var(--secondary);
+  color: white;
+  border: 1px solid var(--primary);
+  border-left: none;
+  border-bottom: none;
+} 
+
+.review-steps li .content {
+  /* position: relative; */
+  /* padding-left: 25px; */
+  /* padding-block: 5px; */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* gap: 5px; */
+}
+
+.review-steps .content .step-quiz {
+  padding: 5px;
+  /* padding-bottom: 5px; */
+}
+
+.review-steps .content .answer {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-steps .content .answer p {
+  padding: 5px;
+}
+
+.review-steps .answer__title {
+  
+  color: white;
+  border-block: 1px solid var(--primary);
+}
+
+.review-steps .answer--user .answer__title {
+  background-color: #62b6cb;
+}
+
+.review-steps .answer--correct .answer__title {
+  background-color: rgb(95, 200, 185);
+}
+
+.review-steps .answer--user.correct .answer__value,
+.review-steps .answer--correct .answer__value {
+  color: green;
+}
+
+.review-steps .answer--user.wrong .answer__value {
+  color: red;
+}
+
+.review-steps .content .answer .answer__value, 
+.review-steps .content .step-quiz {
+  padding-block: 10px;
+}
+
+.answer .answer__value {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  /* justify-content: center; */
+}
+
+.answer .answer__value .line-break {
+  flex-basis: 100%;
+  height: 0;
+}
+
+
+.answer__value img {
+  width: 100px;
+  border-radius: 5px;
+}
+
+.answer--user.correct .answer__value img,
+.answer--correct .answer__value img {
+  border: 2px solid #38b000;
+}
+
+.answer--user.wrong .answer__value img {
+  border: 2px solid red;
+}
+
+.review-steps li .answer-status {
+  position: relative;
+  width: 30px;
+  /* padding: 10px; */
+  height: 30px;
+  align-self: flex-end;
+  border-top: 0.5px solid var(--primary);
+  border-left: 0.5px solid var(--primary);
+  border-top-left-radius: 5px;
+  /* z-index: 10000; */
+}
+
+.answer-status img {
+  width: 85%;
+  /* height: 100%; */
+  position: absolute;
+  inset: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+}
+
+.fraction-wrapper {
+  display: inline-flex;
+  width: fit-content;
+  flex: 0 0 auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.fraction-wrapper .fraction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#fraction .numerator {
+  border-bottom: 2px solid #000;
+}
+
+.answer__value .fraction .numerator {
+  border-bottom: 2px solid green;
+}
+
+.fraction .numerator, .fraction .denominator {
+  padding: 0;
+}
+
+.arrow-separator {
+  margin-inline: 10px;
+}
+
+.center-container {
+  width: 100%;
+  height: 100%;
+  padding-inline: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ratio-form {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.ratio-form .unit-ratio {
+  flex: 1;
+  max-width: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.ratio-form .ratio-symbol {
+  width: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+
+.ratio-form .unit-ratio p,
+.ratio-form .unit-ratio input {
+  width: 100%;
+}
+
+.ratio-form .unit-ratio p.ratio-name {
+  text-align: center;
+  padding: 8px 10px;
+  color: white;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.ratio-form .unit-ratio input {
+  height: 25px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.ratio-form .actual-ratio-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+.ratio-form .actual-ratio-wrapper .actual-ratio-value {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.ratio-form .actual-ratio-wrapper .fpb-input {
+  border: 1.5px solid var(--orange-middle);
+  width: 30px;
+  /* text-align: center; */
+}
+
+
+/* KALKULATOR FPB */
+.fpb-overlay{
+  position: fixed;
+  top:0;
+  left:0;
+
+  width:100vw;
+  height:100vh;
+
+  background: rgba(0,0,0,0.5);
+
+  display:none;
+  /* display: flex; */
+
+  justify-content:center;
+  align-items:center;
+
+  z-index:9999;
+}
+
+.modal-fpb{
+  width: 90%;
+  max-width:420px;
+  height:420px;
+
+  background:white;
+  border-radius:10px;
+
+  padding:15px;
+
+  display:flex;
+  flex-direction:column;
+  overflow: hidden;
+  position: relative;
+  /* justify-content: center;
+  align-items: center; */
+}
+
+.modal-fpb
+.modal-content{
+  /* width:420px;
+  height:420px;
+  background:white; */
+  padding:15px;
+  /* border-radius:10px; */
+  display:grid;
+  grid-template-rows: auto 1fr auto;
+  /* flex-direction:column; */
+  /* flex: 1; */
+  font-family: 'Fira Code', monospace;
+  overflow: hidden;
+  height: 100%;
+}
+
+.modal-fpb h3 {
+  text-align: center;
+  color: var(--primary);
+  font-size: 22px;
+}
+
+.modal-fpb
+.input-area {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex: 1;
+}
+
+.modal-fpb
+.input-area p {
+  font-family: 'Fira Code', monospace;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+.modal-fpb
+.input-area
+#numberInputs {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  align-items: center;
+  /* margin-top: 10px; */
+  position: relative;
+}
+
+.modal-fpb
+#numberInputs
+input{
+  width: 35px;
+  height: 35px;
+  border: 1.5px solid var(--primary);
+}
+
+.modal-fpb
+#numberInputs
+#addNumber{
+  width: 25px;
+  height: 25px;
+  color: white;
+  background-color: var(--orange-old);
+  border-radius: 4px;
+  font-size: 18px;
+  position: absolute;
+  left: 115%;
+}
+
+.modal-fpb
+#startCalc{
+  background-color: var(--primary);
+  /* width: 40px; */
+  color: white;
+  padding: 8px 12px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 18px;
+  border-radius: 5px;
+}
+
+
+.modal-fpb .table-container{
+  /* flex:1; */
+  overflow-y: auto;
+  border:1px solid #ccc;
+  margin:10px 0;
+  position: relative;
+  justify-content: center;
+  align-items: start;
+  padding: 10px;
+  min-height: 0;
+  /* height: 200px; */
+}
+
+.modal-fpb
+table{
+  width:50%;
+  border-collapse:collapse;
+  border: none;
+  font-size: 20px;
+}
+
+.modal-fpb
+td{
+  border: 1.5px solid var(--primary);
+  text-align:center;
+  padding:5px;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+}
+
+.modal-fpb td:first-child th,
+.modal-fpb tr:first-child td {
+  border-top: none;
+}
+
+.modal-fpb tr:last-child td {
+  border-bottom: none;
+}
+
+.modal-fpb td:first-child, .modal-fpb th:first-child {
+  border-left: none;
+}
+
+.modal-fpb td:last-child, .modal-fpb th:last-child {
+  border-right: none;
+}
+
+.modal-fpb
+input{
+  width:60px;
+  text-align:center;
+  font-size: 18px;
+}
+
+.modal-fpb
+.invalid{
+  color:red;
+  font-weight:bold;
+}
+
+.modal-fpb
+.valid{
+  color:#777;
+}
+
+.modal-fpb
+.hasil-selesai{
+  color:green;
+  font-weight:bold;
+}
+
+.modal-fpb .hasil-area {
+  /* display: none; */
+  font-size: 14px;
+  padding: 4px 8px;
+  background-color: #aaa;
+  color: white;
+  border-radius: 4px;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.modal-fpb .hasil-area #equal {
+  display: none;
+}
+
+.modal-fpb .hasil-area.finished {
+  background-color: var(--secondary);
+}
+
+.modal-fpb
+.bottom-content
+.reset-calc {
+  background-color: rgb(255, 72, 72);
+  color: white;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.modal-fpb
+.bottom-content
+.reset-calc:hover {
+  background-color: rgb(235, 51, 51);
+  
+}
+
+.calc-cell,
+.modal-fpb tr td:first-child {
+  transition: all 0.3s ease;
+}
+
+/* .calc-cell.prime-num {
+  animation: changeColor 1s forwards;
+  animation-delay: calc(var(--i) * 0.3s);
+    
+  animation-play-state: paused;
+} */
+
+
+/* .box:nth-child(1) { --i: 0; }
+.box:nth-child(2) { --i: 1; }
+.box:nth-child(3) { --i: 2; }
+
+@keyframes changeColor {
+  from { background: unset; }
+  to { background: #e6d4f5; }
+} */
+
+.fpb-calc-btn {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+
+  cursor: pointer;
+  background: none;
+
+  box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+  transition: all 0.15s ease;
+
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.fpb-calc-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* gambar memenuhi kotak */
+  display: block;
+}
+
+/* hover */
+.fpb-calc-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.25);
+}
+
+/* klik */
+.fpb-calc-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.optional-input-number {
+  position: relative;
+}
+
+.optional-input-number 
+.remove-btn {
+  position: absolute;
+  z-index: 1;
+  top: -7px;
+  right: -7px;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  background-color: #bfc0c0;
+  font-size: 11px;
+}
+
+.modal-fpb
+.fpb-result {
+  position: absolute;
+  font-size: 14px;
+  padding: 4px 8px;
+  background-color: var(--secondary);
+  color: white;
+  border-radius: 4px;
+  font-family: 'Josefin Sans', sans-serif;
+  right: 5px;
+  top: 5px;
+}
+
+.modal-fpb
+.bottom-content {
+  display: none;
+  justify-content: space-between;
+}
+
+.prime-spinner{
+  display:flex;
+  align-items:center;
+  width:70px;
+  gap: 5px;
+}
+
+.modal-fpb input.prime-input{
+  width:40px;
+  text-align:center;
+  font-size: 18px;
+}
+
+.spinner-buttons{
+  display:flex;
+  flex-direction:column;
+  gap: 2px;
+}
+
+.spinner-buttons button{
+  height:15px;
+  font-size:14px;
+  cursor:pointer;
+  background-color: transparent;
+}
+
+.modal-fpb .btn-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  width: 25px;
+  height: 25px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.08); /* soft */
+  color: #555;
+
+  font-size: 18px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.2s ease;
+}
+
+.modal-fpb .btn-close:hover {
+  background: rgba(0, 0, 0, 0.15);
+  color: #222;
+}
+
+.modal-fpb .btn-close:active {
+  transform: scale(0.9);
 }

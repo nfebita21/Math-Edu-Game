@@ -20,7 +20,11 @@ const DrawerInitiator = {
 
   _toggleDrawer(event, drawer) {
     drawer.classList.toggle('open');
-    event.stopPropagation();
+
+    // const dropdownProfile = document.getElementById('dropdownProfile');
+
+
+    // event.stopPropagation();
   },
 
   _closeDrawer(event, drawer) {

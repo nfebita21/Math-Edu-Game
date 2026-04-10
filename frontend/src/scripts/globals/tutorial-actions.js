@@ -1,4 +1,4 @@
-import { createArrowToBottom, createArrowToTop, createBtnNextTutorial, createClue, createClueWrapper, createDialogTutorialBottom, createDialogTutorialTop, createFingerPointer, createGuide, createIllustrationContainer, createIllustrationSummary, createInstruction, createMultiplicationLineTop, createPointerText, createPrecisTutorial, createPrecisWrapper,  createRightArrow, createSwapArrow } from "../views/templates/template-creator";
+import { createArrowLineToLeftRight, createArrowToBottom, createSwapArrowToTop, createBtnNextTutorial, createClue, createClueWrapper, createCurvedArrowToBottom, createDialogTutorialBottom, createDialogTutorialTop, createDoubleCurvedLine, createFingerPointer, createFractionConversionAdditionLine, createFractionConversionMultiplicationLine, createGuide, createHelpText, createIllustrationContainer, createIllustrationSummary, createInstruction, createMultiplicationLineTop, createPointerText, createPrecisTutorial, createPrecisWrapper,  createRightArrow, createSwapArrow, createArrowToTop } from "../views/templates/template-creator";
 
 const actions = {
   toggleOverlay: (next) => {
@@ -12,6 +12,12 @@ const actions = {
       const targetEl = document.querySelector(el);
       targetEl.classList.toggle('focused');
     });
+    next();
+  },
+
+  focusInput: (next, target) => {
+    const input = document.querySelector(target);
+    input.focus();
     next();
   },
 
@@ -65,10 +71,19 @@ const actions = {
     next();
   },
 
-  showPointer: (next, target, instruction = 'Masukkan angka', textContainer = '.result', topPosition ='40px', isInitial = false) => {
+  showPointer: (next, target, instruction = 'Masukkan angka', textContainer = '.result', topPosition ='40px', rightPosition = 'unset', isInitial = false) => {
+
+    if (target === null) {
+      actions.showInstruction(instruction, textContainer);
+      next();
+      return;
+    }
     
     if (target.startsWith('.')) {
-    const btnTarget = document.querySelector(target);
+      let btnTarget = document.querySelectorAll(`div${target}, span${target}`);
+      console.log(btnTarget)
+      btnTarget = btnTarget[btnTarget.length - 1];
+      
       btnTarget.insertAdjacentHTML('beforeend', createFingerPointer());
       btnTarget.addEventListener('click', () => {
         btnTarget.querySelector('.finger-container').remove();
@@ -89,6 +104,7 @@ const actions = {
 
     const fingerEl = document.querySelector('.finger-container');
     fingerEl.style.top = topPosition;
+    fingerEl.style.right = rightPosition;
 
     if (isInitial) {
       const firstInput = document.querySelector('.initial-focus');
@@ -109,23 +125,60 @@ const actions = {
     next();
   },
 
-  showArrowMultiplication: (next, position, isFlipped = 0) => {
-    const multiplicationWrapper = document.querySelector('.multiplication-pair');
+  showArrowMultiplication: (next, target, position, isFlipped = 0, type = 'operation', coords) => {
+    const targetArrow = document.querySelector(target);
 
-    switch (position) {
-      case 'top':
-        multiplicationWrapper.insertAdjacentHTML('beforeend', createMultiplicationLineTop());
-        break;
-      case 'bottom':
-        multiplicationWrapper.insertAdjacentHTML('beforeend', createRightArrow());
-        break;
-      default:
-        break;
-    } 
+    if (type === 'operation') {
+      switch (position) {
+        case 'top':
+          targetArrow.insertAdjacentHTML('beforeend', createMultiplicationLineTop());
+          break;
+        case 'bottom':
+          targetArrow.insertAdjacentHTML('beforeend', createRightArrow());
+          break;
+        default:
+          break;
+      } 
+    } else if (type === 'conversion') {
+      switch (position) {
+        case 'bottom':
+          targetArrow.insertAdjacentHTML('beforeend', createFractionConversionMultiplicationLine());
+          break;
+        case 'top':
+          targetArrow.insertAdjacentHTML('beforeend', createFractionConversionAdditionLine());
+          break;
+        case 'top-to-bottom':
+          targetArrow.insertAdjacentHTML('beforeend', 
+          createCurvedArrowToBottom());
+          break;
+        default:
+          break;
+      }
+    } else if (type === 'common') {
+      switch (position) {
+        case 'to-top': {
+          targetArrow.insertAdjacentHTML('beforeend', createArrowToTop());
+          const arrow = document.querySelector('.arrow-line.to-top');
+          arrow.style.top = coords[0];
+          arrow.style.left = coords[1];
+          break; 
+        }
+        case 'to-top-left': {
+          targetArrow.insertAdjacentHTML('beforeend', createArrowLineToLeftRight());
+          const arrow = document.querySelector('.arrow-line.to-top-left');
+          arrow.style.top = coords[0];
+          arrow.style.left = coords[1];
+          break;
+        }
+        default:
+          break;
+      }
+    }
 
     if (isFlipped) {
-      const arrowEl = document.querySelector('.curved-line');
-      arrowEl.classList.add('flip-horizontal');
+      const arrowEl = document.querySelector('.arrow:last-of-type');
+      arrowEl.classList.add(`flip-horizontal`);
+      
     }
     
 
@@ -160,6 +213,18 @@ const actions = {
     document.querySelector('.tutorial-clue:last-child').style.top = positions[0];
 
     document.querySelector('.tutorial-clue:last-child').style.right = positions[1];
+    next();
+  },
+
+  addClueList: (next, text) => {
+    const clueList = document.querySelector('.clue-list');
+    clueList.classList.add('show');
+
+    const li = document.createElement('li');
+    li.innerHTML = `${text}`;
+
+    clueList.insertAdjacentElement('beforeend', li);
+
     next();
   },
   
@@ -220,7 +285,8 @@ const actions = {
 
   hideElement: (next, target) => {
     const targetEl = document.querySelector(target);
-    targetEl.style.display = 'none';
+    targetEl.classList.contains("show") ? targetEl.classList.remove("show") : targetEl.style.display = "none";
+
     next();
   },
 
@@ -253,7 +319,7 @@ const actions = {
   showArrowNextBtn: (next, target) => {
     const targetEl = document.querySelector(target);
     targetEl.insertAdjacentHTML('beforeend', '<button class="btn-right-arrow"><img src="dialog-next.png"></button>');
-
+// 
     const btnNext = document.querySelector('.btn-right-arrow');
     btnNext.addEventListener('click', () => next(), {once: true});
   },
@@ -262,7 +328,7 @@ const actions = {
     const targetEl = document.querySelector(target);
 
     if (direction === 'toTop') {
-      targetEl.insertAdjacentHTML('beforeend', createArrowToTop());
+      targetEl.insertAdjacentHTML('beforeend', createSwapArrowToTop());
     }
 
     if (direction === 'toBottom') {
@@ -271,7 +337,64 @@ const actions = {
     
 
     next();
-  }
+  },
+
+  checkInput: (next, target, text, onSubmit = false) => {
+    let inputEl = document.querySelectorAll(target);
+    inputEl = inputEl[inputEl.length - 1];
+    const btnSubmit = document.querySelector('#btnSubmitResult');
+
+    function handler(e) {
+      const value = inputEl.value.trim();
+
+      if (value === text) {
+        e.target.removeEventListener("input", handler);
+        next();
+        if (onSubmit) { btnSubmit.classList.add('active') }
+      } else {
+        if (onSubmit) { btnSubmit.classList.remove('active') }
+      }
+    }
+
+    inputEl.addEventListener('input', handler);
+  },
+
+  showDoubleCurvedLine: (next, target) => {
+    const targetEl = document.querySelector(target);
+    targetEl.insertAdjacentHTML('beforeend', createDoubleCurvedLine());
+
+    next();
+  },
   
+  addHelperText: (next, targetContainer, text, positions) => {
+    const comtainer = document.querySelector(targetContainer);
+    comtainer.insertAdjacentHTML('beforeend', createHelpText(text));
+    
+    const helpText = document.querySelector('.help-text:last-of-type');
+    helpText.style.top = positions[0];
+    helpText.style.left = positions[1];
+    next();
+  },
+
+  typingLoop: (next, steps) => {
+    let i = 0;
+    let typingEl = document.getElementById("typing");
+
+    function loop() {
+      typingEl.textContent = steps[i];
+
+      if (i === steps.length - 1) {
+        typingEl.style.color = "green";
+      } else {
+        typingEl.style.color = "black";
+      }
+
+      i = (i + 1) % steps.length; // looping
+      setTimeout(loop, 1000); // ganti tiap 1 detik
+    }
+
+    loop();
+    next();
+  }
 }
 export default actions;
