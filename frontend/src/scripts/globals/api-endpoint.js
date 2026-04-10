@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://math-edu-game-production.up.railway.app';
 
 const API_ENDPOINT = {
   students: `${BASE_URL}/students`,
