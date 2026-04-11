@@ -926,6 +926,10 @@ footer p {
   display: block;
 }
 
+.btn-city-info:active .city-info {
+  display: block;
+}
+
 .btn-city-info img {
   width: 32px;
 }
