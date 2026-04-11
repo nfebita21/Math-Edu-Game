@@ -336,7 +336,7 @@ const fractionSetQuestion = (mainId, currentStep, operator) => {
     htmlElement: `<div class="calc-result">
       <div class="calc-input">
         <div class="first-number">
-          <input id="firstNum" class="initial-focus number-input first-number show" autofocus maxlength="2" autocomplete="off" onfocus="blur();"></input>
+          <input id="firstNum" class="initial-focus number-input first-number show" autofocus maxlength="2" autocomplete="off"></input>
         </div>
         <div class="fraction-container first">
           <input class="first-fraction number-input" id="numerator" max-length="2" autocomplete="off">
@@ -415,11 +415,11 @@ const fractionResult = (mainId, currentStep, operator) => {
           </p>
           <div class="fraction-container">
             <div class="first-fraction__numerator">
-              <input class="first-fraction initial-focus number-input show first-fraction__numerator" id="numerator" max-length="2" autocomplete="off" onfocus="blur();">
+              <input class="first-fraction initial-focus number-input show first-fraction__numerator" id="numerator" max-length="2" autocomplete="off">
             </div>
             <div class="fraction-line"></div>
             <div class="first-fraction__denominator">
-              <input class="first-fraction number-input show first-fraction__denominator" id="denominator" autocomplete="off" onfocus="blur();">
+              <input class="first-fraction number-input show first-fraction__denominator" id="denominator" autocomplete="off">
             </div>
           </div>
         </div>
@@ -1193,24 +1193,24 @@ const multiplicationFractionForm = (mainId, currentStep, operator) => {
         </p>
         <div class="calc-input">
           <div class="first-number">
-            <input id="firstNum" class="initial-focus number-input show first-number" autofocus maxlength="2" autocomplete="off" onfocus="blur();"></input>
+            <input id="firstNum" class="initial-focus number-input show first-number" autofocus maxlength="2" autocomplete="off"></input>
           </div>
           <div class="fraction-container first">
-            <input class="first-fraction number-input" id="numerator" max-length="2" autocomplete="off" onfocus="blur();">
+            <input class="first-fraction number-input" id="numerator" max-length="2" autocomplete="off">
             <div class="fraction-line"></div>
             <div class="first-fraction__denominator">
-              <input class="first-fraction first-fraction__denominator number-input" id="denominator" autocomplete="off" onfocus="blur();">
+              <input class="first-fraction first-fraction__denominator number-input" id="denominator" autocomplete="off">
             </div>
           </div>
           <p class="operator">${operator}</p>
           <div class="second-number">
-            <input id="secondNum" class="show number-input second-number" maxlength="2" autocomplete="off" onfocus="blur();">
+            <input id="secondNum" class="show number-input second-number" maxlength="2" autocomplete="off">
           </div>
           <div class="fraction-container second">
-            <input class="second-fraction number-input" id="numerator" max-length="2" autocomplete="off" onfocus="blur();">
+            <input class="second-fraction number-input" id="numerator" max-length="2" autocomplete="off">
             <div class="fraction-line"></div>
             <div class="second-fraction__denominator">
-              <input class="second-fraction number-input second-fraction__denominator" id="denominator" autocomplete="off" onfocus="blur();">
+              <input class="second-fraction number-input second-fraction__denominator" id="denominator" autocomplete="off">
             </div>
           </div>
         </div>
