@@ -3533,7 +3533,7 @@ div.close-btn {
 }
 
 .precis-wrapper>p:not(:first-child) {
-  font-size: 14px;
+  /* font-size: 14px; */
 }
 
 .precis-wrapper>p:first-child {
@@ -3543,6 +3543,11 @@ div.close-btn {
 
 .precis-wrapper p i {
   color: #264653;
+  font-size: 11px;
+}
+
+.fraction-wrapper.precis {
+  font-size: 12px;
 }
 
 .pointer-text {
@@ -3687,7 +3692,7 @@ span.result {
 
 .tutorial-instruction {
   top: 5%;
-  right: 10%;
+  right: 5%;
   margin-left: 10px;
   max-width: 100px;
   width: min-content;
@@ -3781,14 +3786,13 @@ span.result {
   border-radius: 0.5em;
   box-shadow: 0 10px 20px rgba(black, 0.2);
   position: absolute;
-  padding: 6px 12px;
+  padding: 6px 10px;
   width: 150px;
   /* max-width: 180px; */
   font-family: 'Acme', serif !important;
   top: 105%;
   color: black;
   font-weight: normal !important;
-  font-size: 14px !important;
 }
 
 .tutorial-guide button {
@@ -3799,6 +3803,12 @@ span.result {
   border-radius: 5px;
   font-family: 'Acme', serif;
   float: right;
+}
+
+.tutorial-guide p, 
+.tutorial-guide button {
+  font-size: 12px;
+  line-height: 15px;
 }
 
 .focused {
