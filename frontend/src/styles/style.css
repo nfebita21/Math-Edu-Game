@@ -4894,7 +4894,7 @@ button.switch-input-mode, .btn-switch-operator-comparison {
   width: 80%;
   height: 1px;
   background-color: rgba(0, 0, 0, 0.2); /* warna pudar */
-  margin: 10px auto;
+  margin: 8px auto;
   border-radius: 2px;
 }
 
@@ -5021,7 +5021,7 @@ button.switch-input-mode, .btn-switch-operator-comparison {
   .slider.answer-input {
     max-width: 370px;
     width: 100%;
-    height: 80px;
+    height: 90px;
   }
 
   .slides {
