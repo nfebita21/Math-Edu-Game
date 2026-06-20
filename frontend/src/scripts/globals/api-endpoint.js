@@ -1,4 +1,4 @@
-const BASE_URL = 'http://math-edu-game-production-9a56.up.railway.app';
+const BASE_URL = 'https://math-edu-game-production-9a56.up.railway.app';
 
 const API_ENDPOINT = {
   students: `${BASE_URL}/students`,
